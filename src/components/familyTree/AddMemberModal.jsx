@@ -39,6 +39,7 @@ const AddMemberModal = ({ show, onClose, onAdd, targetUserId, relationship, targ
     dateOfDeath: "", // New Field
     age: "",
     gender: getDefaultGender(),
+    religion: "",
     profilePicture: ""
   });
   const [errors, setErrors] = useState({});
@@ -167,6 +168,9 @@ const AddMemberModal = ({ show, onClose, onAdd, targetUserId, relationship, targ
     if (!formData.lastname.trim()) {
       newErrors.lastname = "Last name is required";
     }
+    if (!formData.religion?.trim()) {
+      newErrors.religion = "Religion is required";
+    }
 
     // Prefix 'Late' Logic
     // const isLate = formData.prefix === 'Late'; // Already defined above
@@ -254,6 +258,7 @@ const AddMemberModal = ({ show, onClose, onAdd, targetUserId, relationship, targ
         dateOfDeath: "",
         age: "",
         gender: getDefaultGender(),
+        religion: "",
         profilePicture: ""
       });
       setErrors({});
@@ -446,8 +451,6 @@ const AddMemberModal = ({ show, onClose, onAdd, targetUserId, relationship, targ
 
                   {/* Row 3: Date of Death (if Late) & Age */}
                   <div className="row g-16">
-
-
                     <div className={formData.prefix === 'Late' ? "col-md-6" : "col-md-6"}>
                       <label className="form-label fw-medium text-neutral-900 mb-8">Age</label>
                       <input
@@ -457,7 +460,47 @@ const AddMemberModal = ({ show, onClose, onAdd, targetUserId, relationship, targ
                         readOnly
                       />
                     </div>
+                    <div className="col-md-6">
+                      <SelectBox
+                        label="Religion"
+                        name="religion"
+                        value={formData.religion}
+                        onChange={handleChange}
+                        error={errors.religion}
+                        options={[
+                          { label: "Christian", value: "Christian" },
+                          { label: "Hindu", value: "Hindu" },
+                          { label: "Muslim", value: "Muslim" },
+                          { label: "Sikh", value: "Sikh" },
+                          { label: "Other", value: "Other" },
+                        ]}
+                        placeholder="Select Religion"
+                        required={true}
+                      />
+                    </div>
                   </div>
+
+                  {/* Row 4: Religion */}
+                  {/* <div className="row g-16 mt-0 mb-16">
+                    <div className="col-md-6">
+                      <SelectBox
+                        label="Religion"
+                        name="religion"
+                        value={formData.religion}
+                        onChange={handleChange}
+                        error={errors.religion}
+                        options={[
+                          { label: "Christian", value: "Christian" },
+                          { label: "Hindu", value: "Hindu" },
+                          { label: "Muslim", value: "Muslim" },
+                          { label: "Sikh", value: "Sikh" },
+                          { label: "Other", value: "Other" },
+                        ]}
+                        placeholder="Select Religion"
+                        required={true}
+                      />
+                    </div>
+                  </div> */}
                 </div>
 
                 {/* SECTION: Contact Information */}

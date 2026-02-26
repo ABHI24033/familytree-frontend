@@ -49,6 +49,7 @@ const EditMemberModal = ({ show, onClose, onUpdate, memberData }) => {
     dateOfDeath: "", // New Field
     age: "",
     gender: "other",
+    religion: "",
     profilePicture: ""
   });
   const [errors, setErrors] = useState({});
@@ -76,6 +77,7 @@ const EditMemberModal = ({ show, onClose, onUpdate, memberData }) => {
         dateOfDeath: formatDateForInput(memberData.dateOfDeath) || "",
         age: memberData.age || "",
         gender: memberData.gender || "other",
+        religion: memberData.religion || "",
         profilePicture: memberData.profilePicture || ""
       });
       setErrors({});
@@ -145,6 +147,9 @@ const EditMemberModal = ({ show, onClose, onUpdate, memberData }) => {
     }
     if (!formData.lastname.trim()) {
       newErrors.lastname = "Last name is required";
+    }
+    if (!formData.religion?.trim()) {
+      newErrors.religion = "Religion is required";
     }
 
     if (isLate) {
@@ -399,6 +404,27 @@ const EditMemberModal = ({ show, onClose, onUpdate, memberData }) => {
                       className="form-control h-48-px bg-neutral-200 radius-8 text-neutral-600 cursor-not-allowed"
                       value={`${formData.age} yrs`}
                       readOnly
+                    />
+                  </div>
+                </div>
+
+                {/* Row 4: Religion */}
+                <div className="row g-16 mt-0 mb-16">
+                  <div className="col-md-6">
+                    <SelectBox
+                      label="Religion *"
+                      name="religion"
+                      value={formData.religion}
+                      onChange={handleChange}
+                      error={errors.religion}
+                      options={[
+                        { label: "Christian", value: "Christian" },
+                        { label: "Hindu", value: "Hindu" },
+                        { label: "Muslim", value: "Muslim" },
+                        { label: "Sikh", value: "Sikh" },
+                        { label: "Other", value: "Other" },
+                      ]}
+                      placeholder="Select Religion"
                     />
                   </div>
                 </div>
