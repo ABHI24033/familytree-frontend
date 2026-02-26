@@ -4,6 +4,7 @@ import { useNavigate } from "react-router-dom";
 import MasterLayout from "../../masterLayout/MasterLayout";
 import Breadcrumb from "../../components/common/Breadcrumb";
 import { createSubscriptionOrder, verifySubscriptionPayment } from "../../api/subscription";
+import ManageFamily from "../../components/subscription/ManageFamily";
 
 const MySubscriptionPage = () => {
     const { user, isProActive, isTrialExpired, refetch } = useAuth();
@@ -19,7 +20,7 @@ const MySubscriptionPage = () => {
             trialEndDate = new Date(user.subscription.expiryDate);
         } else {
             trialEndDate = new Date(createdDate);
-            trialEndDate.setMonth(trialEndDate.getMonth() + 3);
+            trialEndDate.setDate(trialEndDate.getDate() + 150);
         }
 
         const today = new Date();
@@ -144,7 +145,7 @@ const MySubscriptionPage = () => {
                                         </div>
                                         <div className="col-6 col-md-3">
                                             <p className="text-muted small mb-1">Price</p>
-                                            <p className="fw-semibold mb-0">₹1,699/year</p>
+                                            <p className="fw-semibold mb-0">₹699/year</p>
                                         </div>
                                         <div className="col-6 col-md-3">
                                             <p className="text-muted small mb-1">Started On</p>
@@ -163,7 +164,7 @@ const MySubscriptionPage = () => {
                                         </div>
                                         <div className="col-6 col-md-3">
                                             <p className="text-muted small mb-1">Duration</p>
-                                            <p className="fw-semibold mb-0">3 Months</p>
+                                            <p className="fw-semibold mb-0">5 Months</p>
                                         </div>
                                         <div className="col-6 col-md-3">
                                             <p className="text-muted small mb-1">Started On</p>
@@ -214,7 +215,7 @@ const MySubscriptionPage = () => {
                                         onClick={handleSubscribe}
                                     >
                                         <Icon icon="mdi:crown" className="me-2" width={18} />
-                                        Upgrade to Pro - ₹1,699/year
+                                        Upgrade to Pro - ₹699/year
                                     </button>
                                 )}
                                 <button
@@ -227,6 +228,9 @@ const MySubscriptionPage = () => {
                             </div>
                         </div>
                     </div>
+
+                    {/* Manage Family Account */}
+                    <ManageFamily />
                 </div>
 
                 {/* Pro Benefits Card */}
@@ -260,7 +264,7 @@ const MySubscriptionPage = () => {
                                 </li>
                                 <li className="d-flex align-items-center gap-2">
                                     <Icon icon="mdi:check-circle" className="text-success" width={18} />
-                                    <span>Up to 5 Team Members</span>
+                                    <span>Share with Family Members</span>
                                 </li>
                             </ul>
                         </div>
@@ -281,7 +285,7 @@ const MySubscriptionPage = () => {
                                     </h2>
                                     <div id="faq1" className="accordion-collapse collapse" data-bs-parent="#subscriptionFaq">
                                         <div className="accordion-body">
-                                            After your 3-month free trial expires, you'll need to upgrade to the Pro plan to continue accessing all features. Some basic features may still be available, but premium features like event creation will be restricted.
+                                            After your 5-month free trial expires, you'll need to upgrade to the Pro plan to continue accessing all features. Some basic features may still be available, but premium features like event creation will be restricted.
                                         </div>
                                     </div>
                                 </div>
@@ -293,7 +297,7 @@ const MySubscriptionPage = () => {
                                     </h2>
                                     <div id="faq2" className="accordion-collapse collapse" data-bs-parent="#subscriptionFaq">
                                         <div className="accordion-body">
-                                            Click the "Renew Subscription" button above. You'll be redirected to our secure payment gateway (Razorpay) to complete the payment. Your subscription will be extended by 1 year from the current expiry date.
+                                            Click the "Renew Subscription" button above. You'll be redirected to our secure payment gateway (Razorpay) to complete the payment. Your subscription will be extended by 1 year from the current expiry date at the Family rate of ₹699.
                                         </div>
                                     </div>
                                 </div>

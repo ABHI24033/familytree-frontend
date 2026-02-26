@@ -18,7 +18,7 @@ export const pricingPlans = [
             "Poll Creation",
             "Event Participation",
         ],
-        afterOffer: "After 3 months: ₹999 / year", // ⭐ Added
+        afterOffer: "After 5 months: ₹699 / year", // ⭐ Added
         featured: false,
     },
 
@@ -27,8 +27,8 @@ export const pricingPlans = [
         target: "For startups & families",
         icon: "/assets/images/pricing/price-icon2.png",
         bg: "bg-white shadow",   // ⭐ Changed to white + shadow (same as others)
-        price: "₹1699",
-        duration: "/year",
+        price: "₹699",
+        duration: "/ year per Family",
         description:
             "Perfect for families and teams who need advanced features.",
         features: [
@@ -100,8 +100,8 @@ export const UpgradePricingPlans = [
         target: "For startups & families",
         icon: "/assets/images/pricing/price-icon2.png",
         bg: "bg-white shadow",   // ⭐ Changed to white + shadow (same as others)
-        price: "₹1699",
-        duration: "/year",
+        price: "₹699",
+        duration: "/ year per Family",
         description:
             "Perfect for families and teams who need advanced features.",
         features: [

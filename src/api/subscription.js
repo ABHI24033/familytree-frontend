@@ -43,3 +43,25 @@ export const getSubscriptionStatus = async () => {
         throw new Error(error.response?.data?.message || "Failed to get subscription status");
     }
 }
+
+// Get family members
+export const getFamilyMembers = async () => {
+    try {
+        const response = await axiosInstance.get("/subscriptions/family");
+        return response.data;
+    } catch (error) {
+        console.error("Get Family Members Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "Failed to get family members");
+    }
+};
+
+// Add family member
+export const addFamilyMember = async (phone) => {
+    try {
+        const response = await axiosInstance.post("/subscriptions/family/add", { phone });
+        return response.data;
+    } catch (error) {
+        console.error("Add Family Member Error:", error.response?.data || error.message);
+        throw new Error(error.response?.data?.message || "Failed to add family member");
+    }
+};

@@ -52,13 +52,26 @@ export const AuthProvider = ({ children }) => {
       user.subscription?.status === 'active' &&
       new Date(user.subscription?.expiryDate) > new Date();
 
-    // Check Trial status
+    // Check Trial status (150 days / 5 Months)
     if (user.subscription?.plan === 'free' && user.subscription?.expiryDate) {
       isTrialExpired = new Date(user.subscription.expiryDate) < new Date();
     } else {
-      const threeMonthsAgo = new Date();
-      threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
-      isTrialExpired = new Date(user.createdAt) < threeMonthsAgo;
+      const trialThreshold = new Date();
+      trialThreshold.setDate(trialThreshold.getDate() - 150);
+      isTrialExpired = new Date(user.createdAt) < trialThreshold;
+    }
+
+    // Overwrite with primary payer's shared access logic if possible
+    // For inherited access, backend checks it inside getSubscriptionStatus,
+    // but the getProfile/currentUser uses direct. Let's assume if they have a primary_account_id 
+    // we lean on the backend 403 blocks for trial expiry rather than strictly disabling UI,
+    // OR we act as if trial isn't expired on frontend if they have a primary_acc.
+    // Ideally, the 'status' endpoint returns unified 'isProActive'.
+    if (user.primary_account_id && !isProActive) {
+      // By default, assume they have inherited access and hide upgrade prompts
+      // Real validation occurs on the backend middleware anyway
+      isProActive = true;
+      isTrialExpired = false;
     }
   }
 

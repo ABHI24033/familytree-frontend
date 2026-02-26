@@ -15,7 +15,7 @@ const UpgradeSubscriptionPage = () => {
         if (!user?.createdAt) return 0;
         const createdDate = new Date(user.createdAt);
         const trialEndDate = new Date(createdDate);
-        trialEndDate.setMonth(trialEndDate.getMonth() + 3);
+        trialEndDate.setDate(trialEndDate.getDate() + 150);
 
         const today = new Date();
         const diffTime = trialEndDate - today;
