@@ -41,36 +41,60 @@ const HelpPage = () => {
                                         </div>
                                         <div>
                                             <h6 className="mb-2 fw-bold text-primary-light">Email Us</h6>
-                                            <p className="text-secondary-light text-sm mb-1">
+                                            {/* <p className="text-secondary-light text-sm mb-1">
                                                 sanyojantree@gmail.com
-                                            </p>
+                                            </p> */}
                                             <p className="text-secondary-light text-sm mb-0">
-                                                info@sanyojan.com
+                                                hello@sanyojan.in
                                             </p>
                                         </div>
                                     </div>
                                 </div>
                             </div>
 
-                            {/* Phone Card */}
-                            {/* <div className="col-12">
-                                <div className="card h-100 p-0 shadow-none border bg-transparent radius-12">
+                            {/* What's app Card */}
+                            <div className="col-12">
+                                {/* <div className="card h-100 p-0 shadow-none border bg-transparent radius-12">
                                     <div className="card-body p-24 d-flex align-items-start gap-3">
                                         <div className="w-56-px h-56-px rounded-circle bg-success-50 text-success-600 d-flex justify-content-center align-items-center flex-shrink-0">
-                                            <Icon icon="solar:phone-calling-bold" width="28" height="28" />
+                                            <Icon icon="mdi:whatsapp" width="28" height="28" />
                                         </div>
                                         <div>
-                                            <h6 className="mb-2 fw-bold text-primary-light">Call Us</h6>
+                                            <h6 className="mb-2 fw-bold text-primary-light">What's App</h6>
                                             <p className="text-secondary-light text-sm mb-1">
-                                                +91 98765 43210
-                                            </p>
-                                            <p className="text-secondary-light text-sm mb-0">
-                                                040-12345678
+                                                +91 8987583711
                                             </p>
                                         </div>
                                     </div>
+                                </div> */}
+
+                                <div className="card h-100 p-0 shadow-none border bg-transparent radius-12">
+                                    <div className="card-body p-24 d-flex align-items-center gap-3">
+
+                                        {/* Icon */}
+                                        <div className="w-56-px h-56-px rounded-circle bg-success-50 text-success-600 
+                    d-flex justify-content-center align-items-center flex-shrink-0">
+                                            <Icon icon="mdi:whatsapp" width="28" height="28" />
+                                        </div>
+
+                                        {/* Content */}
+                                        <div>
+                                            <h6 className="mb-1 fw-bold text-primary-light">WhatsApp</h6>
+
+                                            {/* Clickable Number */}
+                                            <a
+                                                href="https://wa.me/918987583711"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="text-secondary-light text-sm text-decoration-none"
+                                            >
+                                                +91 89875 83711
+                                            </a>
+                                        </div>
+
+                                    </div>
                                 </div>
-                            </div> */}
+                            </div>
                         </div>
                     </div>
 

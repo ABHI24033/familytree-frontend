@@ -8,68 +8,52 @@ import { format } from 'date-fns';
 
 const ReportsPage = () => {
     const [events, setEvents] = useState([]);
-    const [loading, setLoading] = useState(true);
+    const [eventsLoading, setEventsLoading] = useState(true);
 
     useEffect(() => {
-        const fetchData = async () => {
-            setLoading(true);
-            try {
-                // Fetch Created Events (Host)
-                // Assuming getMyEvents returns { data: [...] } or just [...]
-                const createdRes = await getMyEvents({ limit: 100 });
-                const createdEvents = (createdRes.data || createdRes).map(e => ({ ...e, myRole: 'Host', status: 'Created' }));
-
-                // Fetch Invited Events (Guest) - Need to fetch multiple types to get all?
-                // Backend getReceivedInvitations handles 'pending', 'replied' (accepted/rejected/maybe), 'history'
-                // We want ALL.
-                // Calling in parallel
-                const [pending, replied, history] = await Promise.all([
-                    getReceivedInvitations('pending'),
-                    getReceivedInvitations('replied'),
-                    getReceivedInvitations('history')
-                ]);
-
-                // Merge invited
-                // Note: History might overlap with pending/replied if backend logic isn't mutually exclusive by date.
-                // Usually history is date based, others are future.
-                const allInvited = [...pending, ...replied, ...history];
-
-                // Remove duplicates based on _id just in case
-                const uniqueInvited = Array.from(new Map(allInvited.map(item => [item._id, item])).values());
-                const formattedInvited = uniqueInvited.map(e => ({ ...e, myRole: 'Guest' }));
-
-                // Filter out events where user is also the host (already in createdEvents)
-                const createdIds = new Set(createdEvents.map(e => e._id));
-                const finalInvited = formattedInvited.filter(e => !createdIds.has(e._id));
-
-                // Merge All
-                const allEvents = [...createdEvents, ...finalInvited];
-
-                // Sort by Date Descending (Newest first)
-                allEvents.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
-
-                setEvents(allEvents);
-
-            } catch (error) {
-                console.error("Failed to load reports data", error);
-            } finally {
-                setLoading(false);
-            }
-        };
-
-        fetchData();
+        fetchEventData();
     }, []);
+
+    const fetchEventData = async () => {
+        setEventsLoading(true);
+        try {
+            const createdRes = await getMyEvents({ limit: 100 });
+            const createdEvents = (createdRes.data || createdRes).map(e => ({ ...e, myRole: 'Host', status: 'Created' }));
+
+            const [pending, replied, history] = await Promise.all([
+                getReceivedInvitations('pending'),
+                getReceivedInvitations('replied'),
+                getReceivedInvitations('history')
+            ]);
+
+            const allInvited = [...pending, ...replied, ...history];
+            const uniqueInvited = Array.from(new Map(allInvited.map(item => [item._id, item])).values());
+            const formattedInvited = uniqueInvited.map(e => ({ ...e, myRole: 'Guest' }));
+
+            const createdIds = new Set(createdEvents.map(e => e._id));
+            const finalInvited = formattedInvited.filter(e => !createdIds.has(e._id));
+
+            const allEvents = [...createdEvents, ...finalInvited];
+            allEvents.sort((a, b) => new Date(b.startDate) - new Date(a.startDate));
+
+            setEvents(allEvents);
+        } catch (error) {
+            console.error("Failed to load events data", error);
+        } finally {
+            setEventsLoading(false);
+        }
+    };
 
     return (
         <MasterLayout>
-            <Breadcrumb title="Event Reports" />
+            <Breadcrumb title="Reports" />
 
-            <div className="card h-100 p-0 radius-12">
+            <div className="card h-100 p-0 radius-12 border-0 shadow-sm">
                 <div className="card-header border-bottom bg-base py-16 px-24">
                     <h6 className="text-lg fw-semibold mb-0">My Events & Reports</h6>
                 </div>
                 <div className="card-body p-24">
-                    {loading ? (
+                    {eventsLoading ? (
                         <div className="d-flex justify-content-center py-5">
                             <div className="spinner-border text-primary" role="status"></div>
                         </div>
@@ -84,12 +68,11 @@ const ReportsPage = () => {
                                 <div key={event._id} className="col-xxl-4 col-lg-6 col-md-6">
                                     <div className="card h-100 p-0 shadow-none border bg-transparent radius-12 hover-scale-sm transition-all">
                                         <div className="card-body p-3 d-flex flex-column h-100">
-                                            {/* Header: Image & Basic Info */}
                                             <div className="d-flex align-items-center gap-3 mb-3">
                                                 <img
                                                     src={event.coverImage || '/assets/images/default-event.jpg'}
-                                                    alt=""
                                                     className="w-56-px h-56-px rounded-circle object-fit-cover flex-shrink-0"
+                                                    alt=""
                                                 />
                                                 <div className="flex-grow-1 overflow-hidden">
                                                     <h6 className="text-md mb-1 fw-bold text-truncate">{event.eventName}</h6>
@@ -98,7 +81,6 @@ const ReportsPage = () => {
                                                         <span className="text-truncate">• {format(new Date(event.startDate), 'MMM d, yyyy')}</span>
                                                     </div>
                                                 </div>
-                                                {/* Role Badge */}
                                                 <div className="flex-shrink-0">
                                                     <span className={`badge px-2 py-1 ${event.myRole === 'Host' ? 'text-primary-600 bg-primary-50' : 'text-info-600 bg-info-50'} radius-4`}>
                                                         {event.myRole}
@@ -106,7 +88,6 @@ const ReportsPage = () => {
                                                 </div>
                                             </div>
 
-                                            {/* Status & Time */}
                                             <div className="d-flex align-items-center justify-content-between mb-3 pb-3 border-bottom border-dashed border-gray-200">
                                                 <div className="d-flex flex-column">
                                                     <span className="text-secondary-light text-xs">Your Status</span>
@@ -116,8 +97,7 @@ const ReportsPage = () => {
                                                         <span className={`badge px-2 py-1 radius-4 w-fit-content mt-1 ${event.status === 'accepted' ? 'text-success-600 bg-success-50' :
                                                             event.status === 'rejected' ? 'text-danger-600 bg-danger-50' :
                                                                 event.status === 'maybe' ? 'text-info-600 bg-info-50' :
-                                                                    (!event.status || event.status === 'unknown') ? 'text-warning-600 bg-warning-50' :
-                                                                        'text-warning-600 bg-warning-50'
+                                                                    'text-warning-600 bg-warning-50'
                                                             }`}>
                                                             {(!event.status || event.status === 'unknown') ? 'Pending' : event.status}
                                                         </span>
@@ -129,7 +109,6 @@ const ReportsPage = () => {
                                                 </div>
                                             </div>
 
-                                            {/* Guest Stats */}
                                             <div className="mb-4">
                                                 <div className="d-flex justify-content-between align-items-center mb-2">
                                                     <span className="text-secondary-light text-xs fw-medium">Guest Summary</span>
@@ -149,7 +128,6 @@ const ReportsPage = () => {
                                                 ) : <span className="text-xs text-muted">No guest data</span>}
                                             </div>
 
-                                            {/* Action Button */}
                                             <div className="mt-auto">
                                                 <Link
                                                     to={`/reports/event/${event._id}`}
@@ -159,7 +137,6 @@ const ReportsPage = () => {
                                                     View Full Report
                                                 </Link>
                                             </div>
-
                                         </div>
                                     </div>
                                 </div>
@@ -173,3 +150,4 @@ const ReportsPage = () => {
 };
 
 export default ReportsPage;
+

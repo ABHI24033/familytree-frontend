@@ -15,6 +15,7 @@ export const useEventReport = () => {
     const [filterCity, setFilterCity] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
     const [debouncedSearch, setDebouncedSearch] = useState("");
+    const [memberFilters, setMemberFilters] = useState({}); // Advanced Filters
     const limit = 10;
 
     // Debounce search query
@@ -26,10 +27,10 @@ export const useEventReport = () => {
         return () => clearTimeout(handler);
     }, [searchQuery]);
 
-    // Reset page when city or status filter changes
+    // Reset page when city, status or advanced filters change
     useEffect(() => {
         setPage(1);
-    }, [filterCity, filterStatus]);
+    }, [filterCity, filterStatus, memberFilters]);
 
     // Fetch Event Metadata
     const { data: event, isLoading: eventLoading } = useQuery({
@@ -51,7 +52,7 @@ export const useEventReport = () => {
 
     // Fetch Guests (Native RSVP List - "As Before")
     const { data: guestData, isLoading: guestsLoading, isPlaceholderData } = useQuery({
-        queryKey: ["event-guests", id, page, filterStatus, filterCity, debouncedSearch],
+        queryKey: ["event-guests", id, page, filterStatus, filterCity, debouncedSearch, memberFilters],
         queryFn: async () => {
             const res = await axiosInstance.get(`/events/${id}/guests`, {
                 params: {
@@ -59,7 +60,8 @@ export const useEventReport = () => {
                     limit,
                     status: filterStatus,
                     city: filterCity,
-                    search: debouncedSearch
+                    search: debouncedSearch,
+                    ...memberFilters
                 }
             });
             return res.data;
@@ -98,6 +100,8 @@ export const useEventReport = () => {
         cities,
         searchQuery,
         setSearchQuery,
+        memberFilters,
+        setMemberFilters,
         totalPages,
         totalGuestsCount,
         startEntry,
