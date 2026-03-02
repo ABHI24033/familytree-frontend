@@ -1,4 +1,4 @@
-import { BrowserRouter, Route, Routes, Navigate, useLocation } from "react-router-dom";
+import { BrowserRouter, Route, Routes, Navigate, useLocation, useParams } from "react-router-dom";
 import SignInPage from "./pages/auth/SignInPage";
 import SignUpPage from "./pages/auth/SignUpPage";
 import ForgotPasswordPage from "./pages/auth/ForgotPasswordPage";
@@ -39,6 +39,9 @@ import SystemSettingsPage from "./pages/admin/SystemSettingsPage";
 import UserIpPage from "./pages/admin/UserIpPage";
 import MySubscriptionPage from "./pages/subscription/MySubscriptionPage";
 import UpgradeSubscriptionPage from "./pages/subscription/UpgradeSubscriptionPage";
+import EventAttendancePage from "./pages/event/EventAttendancePage";
+import EventManagementAttendance from "./pages/event/EventManagementAttendance";
+import ReceivedInvitationsPage from "./pages/invitation/ReceivedInvitationsPage";
 
 
 // Route Guard Component
@@ -111,6 +114,13 @@ function HomePageRedirect() {
     return <Navigate to="/admin/user-ips" replace />;
   }
   return <FeedPage />;
+}
+
+// Redirect for legacy RSVP links to the new Event Details page
+function EventRedirect() {
+  const { id } = useParams();
+  const location = useLocation();
+  return <Navigate to={`/events/${id}${location.search}`} replace />;
 }
 
 function AppContent() {
@@ -242,6 +252,14 @@ function AppContent() {
           }
         />
         <Route
+          path="/received-invitations"
+          element={
+            <RouteGuard requireProfile={true}>
+              <ReceivedInvitationsPage />
+            </RouteGuard>
+          }
+        />
+        <Route
           path="/my-guests"
           element={
             <RouteGuard requireProfile={true}>
@@ -290,7 +308,7 @@ function AppContent() {
           }
         />
         <Route
-          path="/events/create-event"
+          path="/create-event"
           element={
             <RouteGuard requireProfile={true}>
               <CreateEventPage />
@@ -298,8 +316,19 @@ function AppContent() {
           }
         />
 
+        <Route
+          path="/event-attendance"
+          element={
+            <RouteGuard requireProfile={true}>
+              <EventManagementAttendance />
+            </RouteGuard>
+          }
+        />
+
         {/* Universal Event Route (Public + Private handling inside component) */}
         <Route path="/events/:id" element={<EventDetailsPage />} />
+        <Route path="/events/:id/attendance" element={<EventAttendancePage />} />
+        <Route path="/rsvp/:id" element={<EventRedirect />} />
         <Route path="/events/:id/report" element={<EventReportPage />} />
 
         <Route

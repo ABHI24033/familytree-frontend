@@ -55,6 +55,8 @@ export const useEvent = () => {
     const savedGuestLists = contactGroupsData?.data || [];
 
     // --------- STATES ---------
+    const [currentStep, setCurrentStep] = useState(1);
+    const [createdEventId, setCreatedEventId] = useState(null);
     const [coverPreview, setCoverPreview] = useState(null);
     const [coverFile, setCoverFile] = useState(null);
     const [eventType, setEventType] = useState("inperson");
@@ -68,9 +70,6 @@ export const useEvent = () => {
     const [sendWhatsAppToFriends, setSendWhatsAppToFriends] = useState(true); // Default to true
     const [inviteWithFamily, setInviteWithFamily] = useState(false); // Default to individual
     const [friendsInviteWithFamily, setFriendsInviteWithFamily] = useState(false); // Default to individual
-
-
-    console.log(selectedExternalContacts);
 
 
     // Form states
@@ -98,8 +97,10 @@ export const useEvent = () => {
                 type: "success",
                 message: data?.message || "Event created successfully!"
             });
-            resetForm();
-            navigate("/events");
+
+            // Instead of resetting and navigating, store ID and go to Step 3
+            setCreatedEventId(data?._id || data?.id);
+            setCurrentStep(3);
         },
         onError: (error) => {
             const errorMessage = error.message || "Failed to create event";
@@ -189,39 +190,29 @@ export const useEvent = () => {
         createContactGroupMutation.mutate(groupData);
     };
 
-    // ========== HANDLE CREATE EVENT ==========
+    // Bulk selection helpers
+    const toggleAllFamily = () => {
+        if (selectedGuests.length === allGuests.length) {
+            setSelectedGuests([]);
+        } else {
+            setSelectedGuests([...allGuests]);
+        }
+    };
+
+    const toggleAllExternal = () => {
+        if (selectedExternalContacts.length === allExternalContacts.length) {
+            setSelectedExternalContacts([]);
+        } else {
+            setSelectedExternalContacts([...allExternalContacts]);
+        }
+    };
+
     const handleCreateEvent = async () => {
-        console.log("handleCreateEvent");
-        // Validation
+
+        // Final Validation (most done in Step 1/2)
         if (!eventName.trim()) {
-            setAlert({
-                type: "danger",
-                message: "Event name is required"
-            });
-            return;
-        }
-
-        if (!startDate || !startTime || !endDate || !endTime) {
-            setAlert({
-                type: "danger",
-                message: "Please fill in all date and time fields"
-            });
-            return;
-        }
-
-        if (eventType === "inperson" && !location.trim()) {
-            setAlert({
-                type: "danger",
-                message: "Location is required for in-person events"
-            });
-            return;
-        }
-
-        if (eventType === "virtual" && !virtualLink.trim()) {
-            setAlert({
-                type: "danger",
-                message: "Virtual link is required for virtual events"
-            });
+            setCurrentStep(1);
+            setAlert({ type: "danger", message: "Event name is required" });
             return;
         }
 
@@ -237,8 +228,13 @@ export const useEvent = () => {
             endDate,
             endTime,
             eventDetails,
-            guests: selectedGuests,
-            externalGuests: selectedExternalContacts,
+            guests: selectedGuests.map(g => g.id), // Just IDs for backend
+            externalGuests: selectedExternalContacts.map(g => ({
+                name: g.name,
+                mobile: g.mobile,
+                email: g.email || "",
+                relation: g.relation || "Friend"
+            })),
             guestListId: null,
             coverImage: coverFile,
             sendWhatsAppToFamily,
@@ -251,8 +247,59 @@ export const useEvent = () => {
         createEventMutation.mutate(eventData);
     };
 
+    // Navigation logic
+    const nextStep = () => {
+        if (currentStep === 1) {
+            if (!eventName.trim()) {
+                setAlert({ type: "danger", message: "Event name is required" });
+                return;
+            }
+
+            if (eventType === "inperson" && !location.trim()) {
+                setAlert({ type: "danger", message: "Venue address is required for in-person events" });
+                return;
+            }
+
+            if (eventType === "virtual" && !virtualLink.trim()) {
+                setAlert({ type: "danger", message: "Meeting link is required for virtual events" });
+                return;
+            }
+
+            if (!startDate || !startTime || !endDate || !endTime) {
+                setAlert({ type: "danger", message: "Please fill in all date and time fields" });
+                return;
+            }
+
+            // Check if end is before start
+            const start = new Date(`${startDate}T${startTime}`);
+            const end = new Date(`${endDate}T${endTime}`);
+
+            if (end <= start) {
+                setAlert({ type: "danger", message: "Event end time must be after the start time" });
+                return;
+            }
+        }
+        setAlert({ type: "", message: "" });
+        setCurrentStep(prev => prev + 1);
+    };
+
+    const downloadQRCode = (canvasSelector = "canvas", filename = "event-qr") => {
+        const canvas = document.querySelector(canvasSelector);
+        if (canvas) {
+            const url = canvas.toDataURL("image/png");
+            const link = document.createElement("a");
+            link.download = `${filename}-${createdEventId}.png`;
+            link.href = url;
+            link.click();
+        }
+    };
+
+    const prevStep = () => setCurrentStep(prev => prev - 1);
+
     // ========== RESET FORM ==========
     const resetForm = () => {
+        setCurrentStep(1);
+        setCreatedEventId(null);
         setEventName("");
         setLocation("");
         setGoogleMapLink("");
@@ -279,6 +326,8 @@ export const useEvent = () => {
         allExternalContacts, // [NEW]
 
         // States
+        currentStep,
+        createdEventId,
         coverPreview,
         eventType,
         selectedGuests,
@@ -307,6 +356,7 @@ export const useEvent = () => {
         isSuccess: createEventMutation.isSuccess,
 
         // Setters
+        setCurrentStep,
         setEventType,
         setSelectedGuests,
         setSelectedExternalContacts, // [NEW]
@@ -328,11 +378,16 @@ export const useEvent = () => {
         setFriendsInviteWithFamily,
 
         // Functions
+        nextStep,
+        prevStep,
+        toggleAllFamily,
+        toggleAllExternal,
         handleCover,
         handleSelectSavedList,
         handleSaveGuestList,
         handleCreateEvent,
         resetForm,
+        downloadQRCode,
 
         // Mutation object (for advanced usage)
         createEventMutation,

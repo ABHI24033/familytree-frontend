@@ -11,6 +11,9 @@ import autoTable from "jspdf-autotable";
 import axiosInstance from "../../api/axiosInstance";
 import { useState } from "react";
 
+import { getEventAttendance } from "../../api/event";
+import EventAttendanceTable from "../../components/event/EventAttendanceTable";
+import { useQuery } from "@tanstack/react-query";
 import MemberFilterModal from "../../components/reports/MemberFilterModal";
 
 const EventReportPage = () => {
@@ -43,6 +46,14 @@ const EventReportPage = () => {
     const { id } = useEventReport();
     const [downloadLoading, setDownloadLoading] = useState(false);
     const [showFilterModal, setShowFilterModal] = useState(false);
+    const [activeTab, setActiveTab] = useState("rsvp"); // [NEW] Toggle between rsvp and attendance
+
+    // [NEW] Fetch attendance data
+    const { data: attendance, isLoading: attendanceLoading } = useQuery({
+        queryKey: ["event-attendance", id],
+        queryFn: () => getEventAttendance(id),
+        enabled: activeTab === "attendance"
+    });
 
     const handleApplyFilters = (filters) => {
         setMemberFilters(filters);
@@ -183,7 +194,6 @@ const EventReportPage = () => {
                 {/* Summary Cards */}
                 <EventReportStats stats={stats} />
 
-                {/* GUEST LIST TABLE section */}
                 <EventGuestTable
                     guests={guests}
                     guestsLoading={guestsLoading}

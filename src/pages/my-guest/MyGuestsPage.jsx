@@ -41,7 +41,7 @@ const MyGuestsPage = () => {
                         <Icon icon="solar:calendar-linear" className="fs-48 text-muted mb-2" />
                         <h5 className="text-muted">No events found</h5>
                         <p className="text-secondary-light">Create an event to start managing guests.</p>
-                        <Link to="/events/create-event" className="btn btn-primary mt-3">
+                        <Link to="/create-event" className="btn btn-primary mt-3">
                             Create Event
                         </Link>
                     </div>

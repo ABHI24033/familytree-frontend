@@ -107,6 +107,17 @@ const EventRSVPForm = ({
     const handleSubmit = (e) => {
         e.preventDefault();
 
+        if (isExternal) {
+            if (!name.trim()) {
+                alert("Please enter your name");
+                return;
+            }
+            if (!mobile.trim()) {
+                alert("Please enter your mobile number");
+                return;
+            }
+        }
+
         if (status === "") {
             alert("Please select your attendance status");
             return;
@@ -137,51 +148,49 @@ const EventRSVPForm = ({
         const isNo = status === "rejected";
 
         return (
-            <div className={`text-center bg-white border rounded-4 animation-fade-in p-4 ${isNo ? 'border-danger-subtle' : isMaybe ? 'border-warning-subtle' : 'border-success-subtle'}`}>
+            <div className={`premium-card animate-fade-up text-center border-0 shadow-lg p-5 ${isNo ? 'bg-danger-bg' : isMaybe ? 'bg-warning-bg' : 'bg-success-bg'}`}>
                 {/* Icon */}
-                <div className={`mb-3 d-inline-flex p-3 rounded-circle ${isNo ? 'bg-danger-subtle' : isMaybe ? 'bg-warning-subtle' : 'bg-success-subtle'}`}>
+                <div className={`mb-4 d-inline-flex p-4 rounded-circle ${isNo ? 'bg-danger-focus text-danger-main' : isMaybe ? 'bg-warning-focus text-warning-main' : 'bg-success-focus text-success-main'}`}>
                     <Icon
-                        icon={isNo ? "solar:sad-square-linear" : isMaybe ? "solar:question-circle-linear" : "solar:check-circle-linear"}
-                        width={40}
-                        className={isNo ? "text-danger" : isMaybe ? "text-warning" : "text-success"}
+                        icon={isNo ? "lucide:x-circle" : isMaybe ? "lucide:help-circle" : "lucide:check-circle-2"}
+                        width={48}
                     />
                 </div>
 
                 {/* Title */}
-                <p className="text-uppercase text-muted fw-bold small mb-1" style={{ letterSpacing: "1px" }}>Response Submitted</p>
-                <h5 className="fw-bold text-dark mb-2">
-                    {isNo ? "You're not attending" : isMaybe ? "You might attend" : "You are attending"}
-                </h5>
+                <p className="text-uppercase text-muted fw-bold small mb-2 tracking-widest" style={{ letterSpacing: "2px" }}>Response Received</p>
+                <h3 className="fw-bold mb-3">
+                    {isNo ? "We'll miss you!" : isMaybe ? "Hope to see you!" : "See you there!"}
+                </h3>
 
-                {/* Status Badge */}
-                <div className="mb-3">
-                    <span className={`badge ${isNo ? 'bg-danger' : isMaybe ? 'bg-warning text-dark' : 'bg-success'} px-3 py-2 rounded-pill`}>
+                <div className="mb-4">
+                    <span className={`px-4 py-2 rounded-pill fw-bold ${isNo ? 'bg-danger text-white' : isMaybe ? 'bg-warning text-dark' : 'bg-success text-white'}`}>
                         {status.charAt(0).toUpperCase() + status.slice(1)}
                     </span>
                 </div>
 
-                {/* City */}
                 {status !== "rejected" && city && (
-                    <div className="mb-3 d-flex align-items-center justify-content-center gap-1 text-muted small">
-                        <Icon icon="solar:map-point-linear" />
-                        <span>{city}</span>
+                    <div className="mb-4 py-3 border-top border-bottom">
+                        <div className="d-flex align-items-center justify-content-center gap-2 text-muted fw-semibold">
+                            <Icon icon="lucide:map-pin" />
+                            <span>Traveling from {city}</span>
+                        </div>
                     </div>
                 )}
 
-                {/* Message */}
-                <p className="text-secondary small mb-4">
+                <p className="text-secondary mb-5 px-md-4">
                     {isNo
-                        ? "We're sorry you won't be able to join us. Your response has been noted."
-                        : "Thank you for letting us know. We look forward to seeing you!"}
+                        ? "We're sorry you won't be able to join us this time. We've updated the host with your response."
+                        : "Your registration is confirmed. We've added you to the guest list and notified the host."}
                 </p>
 
-                {/* Edit Button */}
                 <button
                     type="button"
-                    className="btn btn-outline-secondary btn-sm rounded-pill px-4 fw-semibold border"
+                    className="btn btn-link text-primary fw-bold text-decoration-none transition-all hover-scale"
                     onClick={() => setViewMode("form")}
                 >
-                    <Icon icon="mdi:pencil" className="me-1" /> Change Response
+                    <Icon icon="lucide:edit-3" className="me-2" />
+                    Modify your response
                 </button>
             </div>
         );
@@ -189,27 +198,33 @@ const EventRSVPForm = ({
 
     // --- VIEW: FORM ---
     return (
-        <form onSubmit={handleSubmit} className="animation-fade-in">
-            {/* Public Guest Fields - Visible initially if external */}
+        <form onSubmit={handleSubmit} className="premium-card animate-fade-up border-0 shadow-lg p-4 p-md-5">
+            <h4 className="fw-bold mb-4 text-center">RSVP to the Event</h4>
+
+            {/* Public Guest Fields */}
             {isExternal && (
-                <div className="row g-3 mb-4">
-                    <div className="col-12">
-                        <label className="small fw-bold text-dark mb-1">Your Name <span className="text-danger">*</span></label>
+                <div className="row g-3 mb-5 p-4 bg-light rounded-4 border">
+                    <div className="col-md-6 text-start">
+                        <label className="small fw-bold text-secondary mb-2">
+                            <Icon icon="lucide:user" className="me-1" /> Full Name
+                        </label>
                         <input
                             type="text"
-                            className="form-control border-light-dark shadow-xs"
-                            placeholder="Full name"
+                            className="form-input-premium w-100"
+                            placeholder="How should we address you?"
                             required
                             value={name}
                             onChange={e => setName(e.target.value)}
                         />
                     </div>
-                    <div className="col-12">
-                        <label className="small fw-bold text-dark mb-1">Mobile Number <span className="text-danger">*</span></label>
+                    <div className="col-md-6 text-start">
+                        <label className="small fw-bold text-secondary mb-2">
+                            <Icon icon="lucide:phone" className="me-1" /> Mobile Number
+                        </label>
                         <input
                             type="tel"
-                            className="form-control border-light-dark shadow-xs"
-                            placeholder="Contact number"
+                            className="form-input-premium w-100"
+                            placeholder="For event updates"
                             required
                             value={mobile}
                             onChange={e => setMobile(e.target.value)}
@@ -219,32 +234,37 @@ const EventRSVPForm = ({
             )}
 
             {/* Status Selection */}
-            <div className="mb-4">
-                <label className="fw-bold small mb-2 d-block text-secondary">Aттending the event?</label>
-                <div className="btn-group w-100" role="group">
-                    <input type="radio" className="btn-check" name="status" id="rsvp-yes" checked={status === "accepted"} onChange={() => setStatus("accepted")} />
-                    <label className="btn btn-outline-success py-10 fw-bold" htmlFor="rsvp-yes">Yes</label>
-
-                    <input type="radio" className="btn-check" name="status" id="rsvp-maybe" checked={status === "maybe"} onChange={() => setStatus("maybe")} />
-                    <label className="btn btn-outline-warning py-10 fw-bold" htmlFor="rsvp-maybe">Maybe</label>
-
-                    <input type="radio" className="btn-check" name="status" id="rsvp-no" checked={status === "rejected"} onChange={() => setStatus("rejected")} />
-                    <label className="btn btn-outline-danger py-10 fw-bold" htmlFor="rsvp-no">No</label>
+            <div className="mb-5 text-center">
+                <label className="text-uppercase tracking-wider small fw-bold text-muted mb-3 d-block">Will you join us?</label>
+                <div className="row g-2">
+                    {[
+                        { id: 'accepted', label: 'Attending', icon: 'mdi:check-circle', color: 'text-success', bg: 'bg-success-focus' },
+                        { id: 'maybe', label: 'Maybe', icon: 'mdi:help-circle', color: 'text-warning', bg: 'bg-warning-focus' },
+                        { id: 'rejected', label: 'Not Attending', icon: 'mdi:close-circle', color: 'text-danger', bg: 'bg-danger-focus' }
+                    ].map((opt) => (
+                        <div className="col-4" key={opt.id}>
+                            <label className={`w-100 p-2 p-md-3 border rounded-3 text-center cursor-pointer transition-all ${status === opt.id ? `${opt.bg} border-primary` : 'bg-white'}`}>
+                                <input type="radio" value={opt.id} checked={status === opt.id} onChange={(e) => setStatus(e.target.value)} className="d-none" />
+                                <Icon icon={opt.icon} width={24} className={`${opt.color} mb-1`} />
+                                <div className="smaller fw-bold">{opt.label}</div>
+                            </label>
+                        </div>
+                    ))}
                 </div>
             </div>
 
             {status !== 'rejected' && (
-                <div className="attendance-details border-top pt-3 mt-3 animation-fade-in">
+                <div className="text-start">
                     {/* City Field */}
-                    <div className="mb-3 position-relative">
-                        <label className="small fw-bold text-dark mb-1 d-block">
-                            <Icon icon="solar:map-point-linear" className="me-1 text-primary" />
-                            Your City <span className="text-danger">*</span>
+                    <div className="mb-4 position-relative">
+                        <label className="small fw-bold text-secondary mb-2 d-block">
+                            <Icon icon="lucide:map-pin" className="me-1 text-primary" />
+                            Traveling from
                         </label>
                         <input
                             type="text"
-                            className="form-control shadow-sm"
-                            placeholder="Type to search your city..."
+                            className="form-input-premium w-100"
+                            placeholder="Enter your city..."
                             value={city}
                             onChange={e => setCity(e.target.value)}
                             onFocus={() => { if (filteredCities.length > 0) setShowSuggestions(true); }}
@@ -319,41 +339,36 @@ const EventRSVPForm = ({
                 </div>
             )}
 
-            <div className="d-flex gap-2 mt-4">
-                {/* Cancel/Back Button if we are editing an existing response */}
+            <div className="d-flex gap-3 mt-5">
                 {userStatus && userStatus !== 'pending' && (
                     <button
                         type="button"
-                        className="btn btn-light flex-grow-1 fw-bold rounded-3"
+                        className="btn btn-light flex-grow-1 py-3 fw-bold rounded-3 shadow-sm border-0"
                         onClick={() => setViewMode("summary")}
                     >
-                        Cancel
+                        Back
                     </button>
                 )}
 
                 <button
                     type="submit"
-                    className="btn btn-primary flex-grow-1 py-10 fw-bold rounded-3 shadow-sm"
+                    className="btn-premium flex-grow-1 py-3 shadow-md"
                     disabled={isLoading}
                 >
                     {isLoading ? (
-                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                    ) : (userStatus && userStatus !== 'pending' ? "Update RSVP" : "Submit RSVP")}
+                        <span className="spinner-border spinner-border-sm"></span>
+                    ) : (userStatus && userStatus !== 'pending' ? "Update My Response" : "Confirm Attendance")}
                 </button>
             </div>
 
             <style dangerouslySetInnerHTML={{
                 __html: `
-                .border-light-dark { border-color: #dee2e6; }
-                .shadow-xs { box-shadow: 0 1px 2px rgba(0,0,0,0.05); }
-                .animation-fade-in {
-                    animation: fadeIn 0.3s ease-in-out;
-                }
-                .hover-bg-light:hover { background-color: #f8f9fa !ve; }
-                @keyframes fadeIn {
-                    from { opacity: 0; transform: translateY(5px); }
-                    to { opacity: 1; transform: translateY(0); }
-                }
+                .hover-scale:hover { transform: scale(1.05); }
+                .tracking-widest { letter-spacing: 0.1em; }
+                .bg-success-bg { background-color: #f0fdf4; }
+                .bg-warning-bg { background-color: #fffbeb; }
+                .bg-danger-bg { background-color: #fef2f2; }
+                .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
             ` }} />
         </form>
     );

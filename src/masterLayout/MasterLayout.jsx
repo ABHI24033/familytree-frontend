@@ -6,6 +6,8 @@ import { Link, NavLink, useLocation } from "react-router-dom";
 import ThemeToggleButton from "../helper/ThemeToggleButton";
 import { useAuth } from "../context/AuthContext";
 import NotificationDropdown from '../components/header/NotificationDropdown';
+import { useQuery } from "@tanstack/react-query";
+import { getMyEvents } from "../api/event";
 
 const MasterLayout = ({ children }) => {
   let [sidebarActive, seSidebarActive] = useState(false);
@@ -13,6 +15,15 @@ const MasterLayout = ({ children }) => {
   const location = useLocation(); // Hook to get the current route
   const { logout, user } = useAuth();
   const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+  // Check if user has created any events for conditional sidebar visibility
+  const { data: userEventsData } = useQuery({
+    queryKey: ["userCreatedEventsCount"],
+    queryFn: () => getMyEvents({ limit: 1 }),
+    enabled: !!user,
+  });
+
+  const hasCreatedEvents = (userEventsData?.data || userEventsData)?.length > 0;
 
   const handleLogout = () => {
     logout();
@@ -64,9 +75,10 @@ const MasterLayout = ({ children }) => {
       allDropdowns.forEach((dropdown) => {
         const submenuLinks = dropdown.querySelectorAll(".sidebar-submenu li a");
         submenuLinks.forEach((link) => {
+          const href = link.getAttribute("href") || link.getAttribute("to");
           if (
-            link.getAttribute("href") === location.pathname ||
-            link.getAttribute("to") === location.pathname
+            href === location.pathname ||
+            (href === "/reports" && location.pathname.includes("/report"))
           ) {
             dropdown.classList.add("open");
             const submenu = dropdown.querySelector(".sidebar-submenu");
@@ -156,13 +168,74 @@ const MasterLayout = ({ children }) => {
 
                 <li>
                   <NavLink
-                    to="/events"
+                    to='/received-invitations'
                     className={(navData) => (navData.isActive ? "active-page" : "")}
                   >
-                    <Icon icon="solar:calendar-outline" className="menu-icon" />
-                    <span>Events</span>
+                    <Icon
+                      icon='solar:letter-unread-outline'
+                      className='menu-icon'
+                    />
+                    <span>My Invitations</span>
                   </NavLink>
                 </li>
+
+                {hasCreatedEvents && (
+                  <li className='dropdown'>
+                    <Link to='#'>
+                      <Icon
+                        icon='solar:calendar-bold-duotone'
+                        className='menu-icon'
+                      />
+                      <span>Event Management</span>
+                    </Link>
+                    <ul className='sidebar-submenu'>
+                      <li>
+                        <NavLink
+                          to='/create-event'
+                          className={(navData) =>
+                            navData.isActive ? "active-page" : ""
+                          }
+                        >
+                          <i className='ri-circle-fill circle-icon text-primary-600 w-auto' />{" "}
+                          Create Event
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to='/invitations'
+                          className={(navData) =>
+                            navData.isActive ? "active-page" : ""
+                          }
+                        >
+                          <i className='ri-circle-fill circle-icon text-info-main w-auto' />{" "}
+                          Event Details
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to='/reports'
+                          className={(navData) =>
+                            navData.isActive || location.pathname.includes("/report") ? "active-page" : ""
+                          }
+                        >
+                          <i className='ri-circle-fill circle-icon text-success-main w-auto' />{" "}
+                          Sent Invitations
+                        </NavLink>
+                      </li>
+                      <li>
+                        <NavLink
+                          to='/event-attendance'
+                          className={(navData) =>
+                            navData.isActive ? "active-page" : ""
+                          }
+                        >
+                          <i className='ri-circle-fill circle-icon text-warning-main w-auto' />{" "}
+                          Attendance in Event
+                        </NavLink>
+                      </li>
+                    </ul>
+                  </li>
+                )}
 
                 <li>
                   <NavLink
@@ -306,32 +379,6 @@ const MasterLayout = ({ children }) => {
                     <span>Family Tree</span>
                   </NavLink>
                 </li>
-                {/* 
-            <li>
-              <NavLink
-                to='/my-guests'
-                className={(navData) => (navData.isActive ? "active-page" : "")}
-              >
-                <Icon
-                  icon='solar:users-group-two-rounded-outline'
-                  className='menu-icon'
-                />
-                <span>My Guests</span>
-              </NavLink>
-            </li> */}
-
-                <li>
-                  <NavLink
-                    to='/invitations'
-                    className={(navData) => (navData.isActive ? "active-page" : "")}
-                  >
-                    <Icon
-                      icon='solar:letter-unread-outline'
-                      className='menu-icon'
-                    />
-                    <span>Invitations</span>
-                  </NavLink>
-                </li>
 
                 <li>
                   <NavLink
@@ -356,24 +403,6 @@ const MasterLayout = ({ children }) => {
                       className='menu-icon'
                     />
                     <span>Community Rituals</span>
-                  </NavLink>
-                </li>
-
-                <li>
-                  <NavLink
-                    to='/reports'
-                    className={(navData) => (navData.isActive ? "active-page" : "")}
-                  >
-                    {/* <Icon
-                  icon='solar:database-outline'
-                  className='menu-icon'
-                /> */}
-                    <Icon
-                      icon='solar:users-group-two-rounded-outline'
-                      className='menu-icon'
-                    />
-                    {/* <span>Reports</span> */}
-                    <span>My Guests</span>
                   </NavLink>
                 </li>
 

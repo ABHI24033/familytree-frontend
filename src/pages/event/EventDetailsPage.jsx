@@ -253,7 +253,7 @@ const EventDetailsPage = () => {
 
                                                             {/* Message */}
                                                             <h4 className="fw-bold fs-5 text-success mb-2">
-                                                                Thank you for your response!
+                                                                Thank you for visiting {event.eventName}!
                                                             </h4>
                                                             {/* <p className="text-muted small">Your RSVP has been successfully recorded.</p> */}
                                                         </div>

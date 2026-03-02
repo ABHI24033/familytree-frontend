@@ -91,13 +91,13 @@ const InvitationPage = () => {
                         >
                             View Details
                         </Link>
-                        <Link
+                        {/* <Link
                             to={`/my-guests/event-guest/${event._id}`}
                             className="btn btn-primary w-100 d-flex justify-content-center align-items-center gap-2"
                         >
                             <Icon icon="solar:users-group-rounded-bold" />
                             View Guest List
-                        </Link>
+                        </Link> */}
                     </div>
                 </div>
             </div>
@@ -119,7 +119,7 @@ const InvitationPage = () => {
                     <Icon icon="solar:letter-linear" className="fs-48 text-muted mb-2" />
                     <h5 className="text-muted">No sent invitations found</h5>
                     <p className="text-secondary-light">You haven't sent any invitations yet.</p>
-                    <Link to="/events/create-event" className="btn btn-primary mt-3">
+                    <Link to="/create-event" className="btn btn-primary mt-3">
                         Create Event
                     </Link>
                 </div>

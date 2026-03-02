@@ -356,3 +356,33 @@ export const getReceivedInvitations = async (type = "") => {
         throw error;
     }
 };
+/**
+ * Mark attendance at the venue (Public)
+ * @param {string} eventId 
+ * @param {Object} data - { name, mobile }
+ * @returns {Promise}
+ */
+export const markEventAttendance = async (eventId, data) => {
+    try {
+        const res = await axiosInstance.post(`/events/public/${eventId}/attendance`, data);
+        return res.data;
+    } catch (error) {
+        console.error("Attendance Error:", error);
+        throw error;
+    }
+};
+
+/**
+ * Get attendance list for an event (Host only)
+ * @param {string} eventId 
+ * @returns {Promise}
+ */
+export const getEventAttendance = async (eventId) => {
+    try {
+        const { data } = await axiosInstance.get(`/events/${eventId}/attendance`);
+        return data.data;
+    } catch (error) {
+        console.error("Get Attendance Error:", error);
+        throw error;
+    }
+};

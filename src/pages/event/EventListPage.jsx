@@ -33,7 +33,7 @@ export default function EventListPage() {
                                 </p>
                             </div>
                             <Link
-                                to="/events/create-event"
+                                to="/create-event"
                                 className="btn btn-primary px-5 py-10 d-flex align-items-center"
                             >
                                 <Icon icon="mdi:plus" width={20} className="me-2" />
@@ -43,41 +43,30 @@ export default function EventListPage() {
                     </div>
                 </div>
 
-                {/* Filter Section (Optional - can be added later) */}
-                {/* <div className="card border-0 shadow-sm rounded-4 mb-4">
-                    <div className="card-body p-3">
-                        <div className="row g-3 align-items-center">
-                            <div className="col-12 col-md-6">
-                                <div className="input-group">
-                                    <span className="input-group-text bg-transparent">
-                                        <Icon icon="mdi:magnify" width={20} />
-                                    </span>
-                                    <input
-                                        type="text"
-                                        className="form-control border-start-0"
-                                        placeholder="Search events..."
-                                    />
+                {/* Navigation Tabs */}
+                <div className="row mb-4">
+                    <div className="col-12">
+                        <div className="card border-0 shadow-sm radius-12 overflow-hidden bg-white">
+                            <div className="card-body p-0">
+                                <div className="d-flex flex-column flex-sm-row">
+                                    <button
+                                        className="flex-grow-1 py-3 px-4 fw-bold border-0 bg-white text-primary border-bottom border-3 border-primary shadow-sm"
+                                    >
+                                        <Icon icon="mdi:compass-outline" className="me-2" width={20} />
+                                        Explore Events
+                                    </button>
+                                    <Link
+                                        to="/received-invitations"
+                                        className="flex-grow-1 py-3 px-4 fw-bold border-0 bg-transparent text-muted text-center text-decoration-none hover-bg-light transition-all"
+                                    >
+                                        <Icon icon="solar:letter-unread-bold-duotone" className="me-2" width={20} />
+                                        My Invitations
+                                    </Link>
                                 </div>
-                            </div>
-                            <div className="col-12 col-md-3">
-                                <select className="form-select">
-                                    <option value="">All Types</option>
-                                    <option value="inperson">In-Person</option>
-                                    <option value="virtual">Virtual</option>
-                                </select>
-                            </div>
-                            <div className="col-12 col-md-3">
-                                <button
-                                    className="btn btn-outline-secondary w-100 d-flex align-items-center justify-content-center"
-                                    onClick={() => refetch()}
-                                >
-                                    <Icon icon="mdi:refresh" width={18} className="me-2" />
-                                    Refresh
-                                </button>
                             </div>
                         </div>
                     </div>
-                </div> */}
+                </div>
 
                 {/* Error State */}
                 {error && (
