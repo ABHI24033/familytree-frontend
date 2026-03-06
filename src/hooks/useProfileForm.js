@@ -1,21 +1,23 @@
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import indiaData from "../data/indiaData.json";
-import { useMutation } from "@tanstack/react-query";
-import { submitProfile } from "../api/profile";
+import { useMutation, useQuery } from "@tanstack/react-query";
+import { submitProfile, getUserProfileById, updateUserProfileById, getUserProfile, updateProfile } from "../api/profile";
 import { useAuth } from "../context/AuthContext";
 
 export const useProfileForm = () => {
     const navigate = useNavigate();
-    const { refetch: refetchAuth, user } = useAuth();
+    const [searchParams] = useSearchParams();
+    const userId = searchParams.get("userId");
+    const { refetch: refetchAuth, user: currentUser, hasProfile, isProfileCompleted } = useAuth();
     const [step, setStep] = useState(1);
 
     const [form, setForm] = useState({
         // PERSONAL INFO
         profileImage: null,
         prefix: "",
-        firstname: user?.firstname || "",
-        lastname: user?.lastname || "",
+        firstname: "",
+        lastname: "",
         gender: "",
         dob: "",
         age: "",
@@ -26,7 +28,7 @@ export const useProfileForm = () => {
         marriageDate: "",
 
         // ACCOUNT INFO
-        phone: user?.phone || "",
+        phone: "",
         whatsappNo: "",
         email: "",
         address: "",
@@ -62,6 +64,80 @@ export const useProfileForm = () => {
         religionDetails: "", // For non-Christian
         burialPlace: "",
     });
+
+    // Initialize with current user if no userId in URL
+    useEffect(() => {
+        if (!userId && currentUser) {
+            setForm(prev => ({
+                ...prev,
+                firstname: currentUser.firstname || "",
+                lastname: currentUser.lastname || "",
+                phone: currentUser.phone || "",
+            }));
+        }
+    }, [userId, currentUser]);
+
+    // Fetch existing profile if userId is present OR if current user already has a profile
+    const { data: profileResponse, isLoading: isLoadingProfile } = useQuery({
+        queryKey: ["userProfile", userId || "me"],
+        queryFn: () => userId ? getUserProfileById(userId) : getUserProfile(),
+        enabled: !!userId || hasProfile,
+    });
+
+    useEffect(() => {
+        const data = profileResponse?.data || profileResponse;
+        if (data) {
+            // Handle both getProfile (flat) and getUserProfileById (nested) response formats
+            const p = data.profile || data;
+            const u = data.user || p.user || {};
+
+            if (p._id || u.firstname) {
+                setForm({
+                    profileImage: p.profilePicture || null,
+                    prefix: p.prefix || "",
+                    firstname: u.firstname || "",
+                    lastname: u.lastname || "",
+                    gender: p.gender || "",
+                    dob: p.dob ? p.dob.split('T')[0] : "",
+                    age: p.age?.toString() || "",
+                    dateOfDeath: p.dateOfDeath ? p.dateOfDeath.split('T')[0] : "",
+                    birthPlace: p.birthPlace || "",
+                    deathPlace: p.deathPlace || "",
+                    marital_status: p.marital_status || "",
+                    marriageDate: p.marriageDate ? p.marriageDate.split('T')[0] : "",
+                    phone: u.phone || "",
+                    whatsappNo: p.whatsappNo || "",
+                    email: p.email || "",
+                    address: p.address || "",
+                    country: p.country || "India",
+                    state: p.state || "",
+                    city: p.city || "",
+                    postalCode: p.postalCode || "",
+                    education: p.education?.length ? p.education : [
+                        { level: "Class 10th", year: "", institution: "" },
+                        { level: "Class 12th", year: "", institution: "" },
+                        { level: "Graduation", year: "", institution: "" },
+                        { level: "Post Graduation", year: "", institution: "" }
+                    ],
+                    jobCategory: p.jobCategory || "",
+                    employmentHistory: p.employmentHistory?.length ? p.employmentHistory : [
+                        { fromYear: "", toYear: "", company: "", designation: "" }
+                    ],
+                    foodPreference: p.foodPreference || "",
+                    bloodGroup: p.bloodGroup || "",
+                    religion: p.religion || "",
+                    parish: p.parish || "",
+                    church: p.church || "",
+                    parishPriest: p.parishPriest || "",
+                    parishCoordinator: p.parishCoordinator || "",
+                    parishContact: p.parishContact || "",
+                    lifeHistory: p.lifeHistory || "",
+                    religionDetails: p.religionDetails || "",
+                    burialPlace: p.burialPlace || "",
+                });
+            }
+        }
+    }, [profileResponse]);
 
     const [errors, setErrors] = useState({});
     const [alert, setAlert] = useState({ type: "", message: "" });
@@ -150,43 +226,38 @@ export const useProfileForm = () => {
     const validateStep = (currentStep) => {
         const newErrors = {};
 
-        // PERSONAL INFO
+        // PERSONAL INFO (Keep only absolute essentials required)
         if (currentStep === 1) {
-            if (!form?.profileImage) newErrors.profileImage = "Profile picture is required"
-            if (!form.prefix) newErrors.prefix = "Required";
+            // if (!form?.profileImage) newErrors.profileImage = "Profile picture is required" // Optional
             if (!form.firstname) newErrors.firstname = "Required";
             if (!form.gender) newErrors.gender = "Required";
-            if (!form.dob) newErrors.dob = "Required";
-            if (!form.marital_status) newErrors.marital_status = "Required";
+            if (!form.dob || form.dob === "") newErrors.dob = "Required";
+            // if (!form.marital_status) newErrors.marital_status = "Required"; // Optional
         }
 
         // ADDRESS INFO
         if (currentStep === 2) {
-            if (!form.whatsappNo) newErrors.whatsappNo = "Required";
-            if (!form.email) newErrors.email = "Required";
-            if (!form.address) newErrors.address = "Required";
-            if (!form.state) newErrors.state = "Required";
-            if (!form.country) newErrors.country = "Required";
-            if (!form.city) newErrors.city = "Required";
-            if (!form.postalCode) newErrors.postalCode = "Required";
+            // Making all these optional as per user request
+            // if (!form.whatsappNo) newErrors.whatsappNo = "Required";
+            // if (!form.email) newErrors.email = "Required";
+            // if (!form.address) newErrors.address = "Required";
+            // if (!form.state) newErrors.state = "Required";
+            // if (!form.country) newErrors.country = "Required";
+            // if (!form.city) newErrors.city = "Required";
+            // if (!form.postalCode) newErrors.postalCode = "Required";
         }
 
         // EDUCATION + EMPLOYMENT
         if (currentStep === 3) {
-            // Example: Check if Class 10th institution is filled if strictly required
-            // const class10 = form.education.find(e => e.level === "Class 10th");
-            // if (!class10?.institution) newErrors.education = "Class 10th Institution is required";
-
-            // Keeping it open for now based on user request style
-            //   if (!form.occupation) newErrors.occupation = "Required";
-            //   if (!form.jobType) newErrors.jobType = "Required";
+            // Already optional
         }
 
         // OTHERS
         if (currentStep === 4) {
-            if (!form.foodPreference) newErrors.foodPreference = "Required";
-            if (!form.bloodGroup) newErrors.bloodGroup = "Required";
-            if (!form.religion) newErrors.religion = "Required";
+            // Making optional
+            // if (!form.foodPreference) newErrors.foodPreference = "Required";
+            // if (!form.bloodGroup) newErrors.bloodGroup = "Required";
+            // if (!form.religion) newErrors.religion = "Required";
         }
 
         setErrors(newErrors);
@@ -229,12 +300,47 @@ export const useProfileForm = () => {
             });
             console.log(error);
         }
+    });
 
-    })
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        if (validateStep(step)) submitProfileMutation.mutate(form);
-    }
+        if (!validateStep(step)) return;
+
+        try {
+            let res;
+            if (userId) {
+                res = await updateUserProfileById(userId, form);
+            } else if (hasProfile) {
+                res = await updateProfile(form);
+            } else {
+                res = await submitProfile(form);
+            }
+
+            setAlert({
+                type: "success",
+                message: res?.message || "Profile updated successfully!",
+            });
+
+            // Wait for refetch to complete so App.jsx gets the new isProfileCompleted flag
+            const authRes = await refetchAuth();
+
+            // After 1 second, navigate away. The authContext should be updated by now.
+            setTimeout(() => {
+                if (userId) {
+                    navigate("/family-tree");
+                } else if (authRes.data?.data?.user?.isSuperAdmin) {
+                    navigate("/admin/user-ips");
+                } else {
+                    navigate("/");
+                }
+            }, 1000);
+        } catch (error) {
+            setAlert({
+                type: "danger",
+                message: error?.message || "Something went wrong!, please retry.",
+            });
+        }
+    };
 
     return {
         step,
@@ -254,5 +360,7 @@ export const useProfileForm = () => {
         isPending: submitProfileMutation?.isPending,
         alert,
         setAlert,
+        hasProfile,
+        isProfileCompleted,
     };
 };

@@ -90,6 +90,10 @@ axiosInstance.interceptors.request.use(
       });
     }
 
+    if (accessToken && !isAuthRequest) {
+      config.headers.Authorization = `Bearer ${accessToken}`;
+    }
+
     return config;
   },
   (error) => Promise.reject(error)

@@ -179,63 +179,73 @@ const MasterLayout = ({ children }) => {
                   </NavLink>
                 </li>
 
-                {hasCreatedEvents && (
-                  <li className='dropdown'>
-                    <Link to='#'>
-                      <Icon
-                        icon='solar:calendar-bold-duotone'
-                        className='menu-icon'
-                      />
-                      <span>Event Management</span>
-                    </Link>
-                    <ul className='sidebar-submenu'>
-                      <li>
-                        <NavLink
-                          to='/create-event'
-                          className={(navData) =>
-                            navData.isActive ? "active-page" : ""
-                          }
-                        >
-                          <i className='ri-circle-fill circle-icon text-primary-600 w-auto' />{" "}
-                          Create Event
-                        </NavLink>
-                      </li>
-                      <li>
-                        <NavLink
-                          to='/invitations'
-                          className={(navData) =>
-                            navData.isActive ? "active-page" : ""
-                          }
-                        >
-                          <i className='ri-circle-fill circle-icon text-info-main w-auto' />{" "}
-                          Event Details
-                        </NavLink>
-                      </li>
-                      <li>
-                        <NavLink
-                          to='/reports'
-                          className={(navData) =>
-                            navData.isActive || location.pathname.includes("/report") ? "active-page" : ""
-                          }
-                        >
-                          <i className='ri-circle-fill circle-icon text-success-main w-auto' />{" "}
-                          Sent Invitations
-                        </NavLink>
-                      </li>
-                      <li>
-                        <NavLink
-                          to='/event-attendance'
-                          className={(navData) =>
-                            navData.isActive ? "active-page" : ""
-                          }
-                        >
-                          <i className='ri-circle-fill circle-icon text-warning-main w-auto' />{" "}
-                          Attendance in Event
-                        </NavLink>
-                      </li>
-                    </ul>
-                  </li>
-                )}
+                {/* {hasCreatedEvents && ( */}
+                <li className='dropdown'>
+                  <Link to='#'>
+                    <Icon
+                      icon='solar:calendar-bold-duotone'
+                      className='menu-icon'
+                    />
+                    <span>Event Management</span>
+                  </Link>
+                  <ul className='sidebar-submenu'>
+                    <li>
+                      <NavLink
+                        to='/create-event'
+                        className={(navData) =>
+                          navData.isActive ? "active-page" : ""
+                        }
+                      >
+                        <i className='ri-circle-fill circle-icon text-primary-600 w-auto' />{" "}
+                        Create Event
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                        to='/invitations'
+                        className={(navData) =>
+                          navData.isActive ? "active-page" : ""
+                        }
+                      >
+                        <i className='ri-circle-fill circle-icon text-info-main w-auto' />{" "}
+                        Event Details
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                        to='/sent-invitations'
+                        className={(navData) =>
+                          navData.isActive ? "active-page" : ""
+                        }
+                      >
+                        <i className='ri-circle-fill circle-icon text-primary-600 w-auto' />{" "}
+                        Sent Invitations
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                        to='/reports'
+                        className={(navData) =>
+                          navData.isActive || location.pathname.includes("/report") ? "active-page" : ""
+                        }
+                      >
+                        <i className='ri-circle-fill circle-icon text-success-main w-auto' />{" "}
+                        Reports
+                      </NavLink>
+                    </li>
+                    <li>
+                      <NavLink
+                        to='/event-attendance'
+                        className={(navData) =>
+                          navData.isActive ? "active-page" : ""
+                        }
+                      >
+                        <i className='ri-circle-fill circle-icon text-warning-main w-auto' />{" "}
+                        Attendance in Event
+                      </NavLink>
+                    </li>
+                  </ul>
+                </li>
 
                 <li>
                   <NavLink

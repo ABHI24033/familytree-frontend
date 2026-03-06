@@ -1,3 +1,4 @@
+import { useSearchParams, useLocation } from "react-router-dom";
 import Stepper from "./Stepper";
 import PersonalInfo from "./steps/PersonalInfo";
 import AddressInfo from "./steps/AddressInfo";
@@ -7,6 +8,9 @@ import { useProfileForm } from "../../hooks/useProfileForm";
 import AlertBox from "../ui/Alert";
 
 const ProfileForm = () => {
+  const [searchParams] = useSearchParams();
+  const location = useLocation();
+  const userId = searchParams.get("userId");
   const {
     step,
     form,
@@ -25,7 +29,10 @@ const ProfileForm = () => {
     handleEmploymentChange,
     addEmploymentRow,
     removeEmploymentRow,
+    hasProfile,
   } = useProfileForm();
+
+  const isUpdateMode = !!userId || location.pathname === "/update-profile" || hasProfile;
 
   return (
     <div
@@ -49,7 +56,9 @@ const ProfileForm = () => {
               style={{ width: "200px", height: "auto" }}
             />
 
-            <h6 className="fw-semibold mt-3">Complete your Sanyojan profile</h6>
+            <h6 className="fw-semibold mt-3">
+              {isUpdateMode ? "Update your profile" : "Complete your Sanyojan profile"}
+            </h6>
 
             <p className="text-neutral-500 mb-4">
               Fill up your details and proceed to the next steps.
@@ -135,8 +144,8 @@ const ProfileForm = () => {
                 </button>
               ) : (
                 <button
+                  type="button"
                   onClick={handleSubmit}
-                  type="submit"
                   disabled={isPending}
                   className="btn btn-primary"
                 >

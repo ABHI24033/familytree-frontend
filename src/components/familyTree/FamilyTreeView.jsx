@@ -110,9 +110,9 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
       if (currentUserNode.relationships?.partnerId) {
         const partner = people.find(p => p.id === currentUserNode.relationships.partnerId);
         if (partner) {
-          if (partner.relationships.fatherId) hiddenNodeIds.add(partner.relationships.fatherId);
-          if (partner.relationships.motherId) hiddenNodeIds.add(partner.relationships.motherId);
-          if (partner.relationships.siblingIds) partner.relationships.siblingIds.forEach(sid => hiddenNodeIds.add(sid));
+          if (partner.relationships?.fatherId) hiddenNodeIds.add(partner.relationships.fatherId);
+          if (partner.relationships?.motherId) hiddenNodeIds.add(partner.relationships.motherId);
+          if (partner.relationships?.siblingIds) partner.relationships.siblingIds.forEach(sid => hiddenNodeIds.add(sid));
         }
       }
 
@@ -120,7 +120,7 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
       if (currentUserNode.relationships?.siblingIds) {
         currentUserNode.relationships.siblingIds.forEach(sid => {
           const sibling = people.find(p => p.id === sid);
-          if (sibling && sibling.relationships.partnerId) {
+          if (sibling && sibling.relationships?.partnerId) {
             const partner = people.find(p => p.id === sibling.relationships.partnerId);
             if (partner) {
               if (partner.relationships?.fatherId) hiddenNodeIds.add(partner.relationships.fatherId);
@@ -135,9 +135,9 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
       if (currentUserNode.relationships?.motherId) {
         const mother = people.find(p => p.id === currentUserNode.relationships.motherId);
         if (mother) {
-          if (mother.relationships.fatherId) hiddenNodeIds.add(mother.relationships.fatherId);
-          if (mother.relationships.motherId) hiddenNodeIds.add(mother.relationships.motherId);
-          if (mother.relationships.siblingIds) mother.relationships.siblingIds.forEach(sid => hiddenNodeIds.add(sid));
+          if (mother.relationships?.fatherId) hiddenNodeIds.add(mother.relationships.fatherId);
+          if (mother.relationships?.motherId) hiddenNodeIds.add(mother.relationships.motherId);
+          if (mother.relationships?.siblingIds) mother.relationships.siblingIds.forEach(sid => hiddenNodeIds.add(sid));
         }
       }
 
@@ -166,8 +166,8 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
     if (currentUserNode?.relationships?.partnerId) {
       const partner = people.find(p => p.id === currentUserNode.relationships.partnerId);
       if (partner) {
-        if (partner.relationships.fatherId) partnerParentIds.add(partner.relationships.fatherId);
-        if (partner.relationships.motherId) partnerParentIds.add(partner.relationships.motherId);
+        if (partner.relationships?.fatherId) partnerParentIds.add(partner.relationships.fatherId);
+        if (partner.relationships?.motherId) partnerParentIds.add(partner.relationships.motherId);
       }
     }
 
@@ -210,18 +210,20 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
       const person = people.find(p => p.id === id);
       if (!person) continue;
 
-      if (person.relationships.siblingIds) {
+      if (person.relationships?.siblingIds) {
         person.relationships.siblingIds.forEach(sid => addToQueue(sid, level));
       }
-      if (person.relationships.partnerId) {
+      if (person.relationships?.partnerId) {
         // Only traverse to partner if not hidden
         if (!hiddenNodeIds.has(person.relationships.partnerId)) {
           addToQueue(person.relationships.partnerId, level);
         }
       }
-      person.relationships.childrenIds.forEach(cid => addToQueue(cid, level + 1));
-      if (person.relationships.fatherId) addToQueue(person.relationships.fatherId, level - 1);
-      if (person.relationships.motherId) addToQueue(person.relationships.motherId, level - 1);
+      if (person.relationships?.childrenIds) {
+        person.relationships.childrenIds.forEach(cid => addToQueue(cid, level + 1));
+      }
+      if (person.relationships?.fatherId) addToQueue(person.relationships.fatherId, level - 1);
+      if (person.relationships?.motherId) addToQueue(person.relationships.motherId, level - 1);
     }
 
     let changed = true;
@@ -235,8 +237,8 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
         const currentLevel = levels.get(person.id);
         if (currentLevel === undefined) return;
 
-        const fatherId = person.relationships.fatherId;
-        const motherId = person.relationships.motherId;
+        const fatherId = person.relationships?.fatherId;
+        const motherId = person.relationships?.motherId;
 
         if (fatherId || motherId) {
           let minRequiredLevel = -Infinity;
@@ -339,8 +341,8 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
         const validChildren = nextLevelIds.filter(cid => {
           const child = people.find(c => c.id === cid);
           if (!child) return false;
-          const father = child.relationships.fatherId;
-          const mother = child.relationships.motherId;
+          const father = child.relationships?.fatherId;
+          const mother = child.relationships?.motherId;
           // Check if this child belongs to ANY member of our current unit
           return unitMembers.includes(father) || unitMembers.includes(mother);
         });
@@ -425,8 +427,8 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
           const p1 = people.find(p => p.id === id);
           const p2 = people.find(p => p.id === partner);
 
-          const hasParent1 = p1 && (p1.relationships.fatherId || p1.relationships.motherId);
-          const hasParent2 = p2 && (p2.relationships.fatherId || p2.relationships.motherId);
+          const hasParent1 = p1 && (p1.relationships?.fatherId || p1.relationships?.motherId);
+          const hasParent2 = p2 && (p2.relationships?.fatherId || p2.relationships?.motherId);
 
           if (!hasParent1 && hasParent2) {
             representative = partner;
@@ -449,7 +451,7 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
         // Get primary parent X
         const getParentX = (p) => {
           if (!p) return -1;
-          const pid = p.relationships.fatherId || p.relationships.motherId;
+          const pid = p.relationships?.fatherId || p.relationships?.motherId;
           if (pid && nodePositions.has(pid)) return nodePositions.get(pid).x;
           return -1;
         };
@@ -478,8 +480,9 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
           // Find all units in this level that share this parent
           siblings = units.filter(u => {
             const p = people.find(x => x.id === u);
-            return (p.relationships.fatherId === person.relationships.fatherId) ||
-              (p.relationships.motherId === person.relationships.motherId);
+            if (!p) return false;
+            return (p.relationships?.fatherId === person.relationships?.fatherId) ||
+              (p.relationships?.motherId === person.relationships?.motherId);
           });
         } else {
           siblings = [unitId]; // Root or Disjoint
@@ -593,7 +596,7 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
       const person = people.find(p => p.id === id);
       if (!person) return;
 
-      const partner = person.relationships.partnerId
+      const partner = person.relationships?.partnerId
         ? people.find(p => p.id === person.relationships.partnerId)
         : null;
 
@@ -625,9 +628,9 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
           gender: partner.gender,
           dob: partner.dob
         } : null,
-        father: person.relationships.fatherId,
-        mother: person.relationships.motherId,
-        childrenIds: person.relationships.childrenIds,
+        father: person.relationships?.fatherId,
+        mother: person.relationships?.motherId,
+        childrenIds: person.relationships?.childrenIds,
         sons: [],
         daughters: [],
         rootId: rootId,
@@ -656,7 +659,7 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
       const canAdd = currentUser?.isAdmin || currentUser?.isSuperAdmin || currentUser?.id === person.id;
 
       if (onAddRelative && canAdd) {
-        if (!person.relationships.fatherId) {
+        if (!person.relationships?.fatherId) {
           const addFatherId = `add-father-${id}`;
           flowNodes.push({
             id: addFatherId,
@@ -676,7 +679,7 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
           });
         }
 
-        if (!person.relationships.motherId) {
+        if (!person.relationships?.motherId) {
           const addMotherId = `add-mother-${id}`;
           flowNodes.push({
             id: addMotherId,
@@ -721,7 +724,7 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
             const partner = people.find(p => p.id === partnerId);
             if (partner) {
               // If this marriage connects Partner's Father and Mother
-              if (fam.partnerIds.includes(partner.relationships.fatherId) && fam.partnerIds.includes(partner.relationships.motherId)) {
+              if (fam.partnerIds.includes(partner.relationships?.fatherId) && fam.partnerIds.includes(partner.relationships?.motherId)) {
                 marriageEdgeColor = '#ec4899'; // Pink
               }
             }
@@ -790,7 +793,7 @@ const FamilyTreeView = ({ treeData, currentUser, onAddMember, onEditMember, onDe
                 // If this family consists of partner's father and mother
                 const partner = people.find(p => p.id === partnerId);
                 if (partner) {
-                  if (fam.partnerIds.includes(partner.relationships.fatherId) || fam.partnerIds.includes(partner.relationships.motherId)) {
+                  if (fam.partnerIds.includes(partner.relationships?.fatherId) || fam.partnerIds.includes(partner.relationships?.motherId)) {
                     return true;
                   }
                 }

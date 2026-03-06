@@ -142,6 +142,21 @@ export const setNewPassword = async (data) => {
   }
 };
 
+/**
+ * Update password for first-time login (admin-created members)
+ * @param {Object} data - { password, confirm_password }
+ * @returns {Promise<Object>} Response data
+ */
+export const updateFirstPassword = async (data) => {
+  try {
+    const response = await axiosInstance.post("/auth/update-first-password", data);
+    return response.data;
+  } catch (error) {
+    console.error("Update First Password Error:", error.response?.data || error.message);
+    throw new Error(error.response?.data?.message || "Failed to update password");
+  }
+};
+
 // ==================== GET CURRENT USER ====================
 
 /**

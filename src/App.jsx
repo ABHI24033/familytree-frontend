@@ -32,7 +32,9 @@ import EventGuestPage from "./pages/my-guest/EventGuestPage";
 import KnowledgeBank from "./pages/knowledge-bank/KnowledgeBank";
 import SocialMediaPage from "./pages/social-media/SocialMediaPage";
 import ReportsPage from "./pages/reports/ReportsPage";
-import HelpPage from "./pages/help/HelpPage";
+import SentInvitationsPage from './pages/reports/SentInvitationsPage';
+import SentInvitationsGuestListPage from './pages/reports/SentInvitationsGuestListPage';
+import HelpPage from './pages/help/HelpPage';
 import CreateKnowledgeBank from "./components/knowledge-bank/CreateKnowledgeBankForm";
 import AdminKnowledgeBankTable from "./components/knowledge-bank/AdminKnowledgeBankTable";
 import SystemSettingsPage from "./pages/admin/SystemSettingsPage";
@@ -42,6 +44,7 @@ import UpgradeSubscriptionPage from "./pages/subscription/UpgradeSubscriptionPag
 import EventAttendancePage from "./pages/event/EventAttendancePage";
 import EventManagementAttendance from "./pages/event/EventManagementAttendance";
 import ReceivedInvitationsPage from "./pages/invitation/ReceivedInvitationsPage";
+import SetNewPasswordPage from "./pages/auth/SetNewPasswordPage";
 
 
 // Route Guard Component
@@ -50,6 +53,7 @@ function RouteGuard({ children, requireProfile = false, redirectIfAuthenticated 
   const {
     isAuthenticated,
     hasProfile,
+    isProfileCompleted,
     isLoading,
     isTrialExpired,
     isProActive,
@@ -69,7 +73,8 @@ function RouteGuard({ children, requireProfile = false, redirectIfAuthenticated 
     // If authenticated, redirect based on profile status
     if (isAuthenticated) {
       const defaultPath = user?.isSuperAdmin ? "/admin/user-ips" : "/";
-      return <Navigate to={hasProfile ? defaultPath : "/complete-profile"} replace />;
+      const targetPath = isProfileCompleted ? defaultPath : (hasProfile ? "/update-profile" : "/complete-profile");
+      return <Navigate to={targetPath} replace />;
     }
     // If not authenticated, allow access (for sign-in/sign-up pages)
     return children;
@@ -80,14 +85,28 @@ function RouteGuard({ children, requireProfile = false, redirectIfAuthenticated 
     return <Navigate to="/sign-in" state={{ from: location }} replace />;
   }
 
+  // Mandatory password reset for first-time login (admin-created members)
+  if (user?.isFirstLogin && location.pathname !== "/set-new-password") {
+    return <Navigate to="/set-new-password" replace />;
+  }
+
   // Check super admin requirement
   if (requireSuperAdmin && !user?.isSuperAdmin) {
     return <Navigate to="/" replace />;
   }
 
   // Check profile requirement
-  if (requireProfile && !hasProfile) {
-    return <Navigate to="/complete-profile" state={{ from: location }} replace />;
+  const searchParams = new URLSearchParams(location.search);
+  const targetUserId = searchParams.get("userId");
+  const isAdmin = user?.isAdmin || user?.isSuperAdmin;
+
+  // Allow admins to access profile forms for other users
+  const isEditingOther = (location.pathname === "/complete-profile" || location.pathname === "/update-profile") && targetUserId && isAdmin;
+  const isProfilePage = location.pathname === "/complete-profile" || location.pathname === "/update-profile";
+
+  if (requireProfile && !isProfileCompleted && !isEditingOther && !isProfilePage) {
+    const targetPath = hasProfile ? "/update-profile" : "/complete-profile";
+    return <Navigate to={targetPath} state={{ from: location }} replace />;
   }
 
   // Subscription Check (Lockout Logic)
@@ -145,12 +164,21 @@ function AppContent() {
           }
         />
         <Route path="/forgot-password" element={<ForgotPasswordPage />} />
+        <Route path="/set-new-password" element={<RouteGuard><SetNewPasswordPage /></RouteGuard>} />
 
         {/* Protected Routes */}
         <Route
           path="/complete-profile"
           element={
-            <RouteGuard requireProfile={false}>
+            <RouteGuard requireProfile={true}>
+              <ProfileForm />
+            </RouteGuard>
+          }
+        />
+        <Route
+          path="/update-profile"
+          element={
+            <RouteGuard requireProfile={true}>
               <ProfileForm />
             </RouteGuard>
           }
@@ -376,6 +404,22 @@ function AppContent() {
           element={
             <RouteGuard requireProfile={true}>
               <ReportsPage />
+            </RouteGuard>
+          }
+        />
+        <Route
+          path="/sent-invitations"
+          element={
+            <RouteGuard requireProfile={true}>
+              <SentInvitationsPage />
+            </RouteGuard>
+          }
+        />
+        <Route
+          path="/sent-invitations/:id/guests"
+          element={
+            <RouteGuard requireProfile={true}>
+              <SentInvitationsGuestListPage />
             </RouteGuard>
           }
         />

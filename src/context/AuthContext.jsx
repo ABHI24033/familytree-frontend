@@ -40,6 +40,7 @@ export const AuthProvider = ({ children }) => {
 
   const isAuthenticated = data?.success === true;
   const hasProfile = data?.data?.hasProfile ?? false;
+  const isProfileCompleted = data?.data?.isProfileCompleted ?? false;
   const user = data?.data?.user ?? null;
 
   // Subscription Logic
@@ -94,6 +95,7 @@ export const AuthProvider = ({ children }) => {
   const value = {
     isAuthenticated,
     hasProfile,
+    isProfileCompleted,
     user,
     isTrialExpired,
     isProActive,

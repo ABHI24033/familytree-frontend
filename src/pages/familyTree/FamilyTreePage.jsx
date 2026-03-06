@@ -103,6 +103,16 @@ const FamilyTreePage = () => {
   const handleAddMember = async (memberData) => {
     try {
       const response = await addFamilyMember(memberData);
+
+      if (response.exists) {
+        setAlert({ type: "success", message: response.message });
+        // Redirect to complete profile for this specific user
+        setTimeout(() => {
+          navigate(`/complete-profile?userId=${response.data.id}`);
+        }, 1500);
+        return;
+      }
+
       // Re-load the tree to get the updated structure
       await loadFamilyTree();
 

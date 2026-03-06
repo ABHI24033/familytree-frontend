@@ -44,7 +44,7 @@ const ReceivedInvitationsPage = () => {
 
         return (
             <div key={invitation._id} className="col-xxl-4 col-lg-6 col-md-6 mb-4">
-                <div className="card h-100 shadow-sm border-0 radius-16 hover-scale-sm transition-all overflow-hidden bg-white">
+                <div className="card h-100 p-16 shadow-sm border-0 radius-16 hover-scale-sm transition-all overflow-hidden bg-white">
                     <div className="position-relative">
                         <img
                             src={event.coverImage || '/assets/images/default-event.jpg'}
@@ -110,7 +110,7 @@ const ReceivedInvitationsPage = () => {
                         <div className="mt-auto pt-3 d-flex gap-2">
                             <Link
                                 to={`/events/${event._id}`}
-                                className="btn btn-primary w-100 radius-12 fw-bold py-2 d-flex align-items-center justify-content-center gap-2 shadow-sm"
+                                className="btn btn-primary w-100 radius-12 fw-bold py-6 d-flex align-items-center justify-content-center gap-2 shadow-sm"
                             >
                                 <Icon icon="solar:eye-bold-duotone" width={18} />
                                 View Details & RSVP
@@ -130,21 +130,21 @@ const ReceivedInvitationsPage = () => {
                 <div className="card-body p-0">
                     <div className="d-flex hide-scrollbar overflow-x-auto bg-light bg-opacity-50">
                         <button
-                            className={`flex-grow-1 py-3 px-4 fw-bold border-0 transition-all ${filter === 'pending' ? 'bg-white text-primary border-bottom border-3 border-primary shadow-sm' : 'bg-transparent text-muted'}`}
+                            className={`flex-grow-1 py-3 px-4 d-flex justify-content-center align-items-center fw-bold border-0 transition-all ${filter === 'pending' ? 'bg-white text-primary border-bottom border-3 border-primary shadow-sm' : 'bg-transparent text-muted'}`}
                             onClick={() => setFilter('pending')}
                         >
                             <Icon icon="solar:letter-unread-bold-duotone" className="me-2" />
                             Pending ({filter === 'pending' ? invitations.length : '...'})
                         </button>
                         <button
-                            className={`flex-grow-1 py-3 px-4 fw-bold border-0 transition-all ${filter === 'replied' ? 'bg-white text-primary border-bottom border-3 border-primary shadow-sm' : 'bg-transparent text-muted'}`}
+                            className={`flex-grow-1 py-3 px-4 d-flex justify-content-center align-items-center fw-bold border-0 transition-all ${filter === 'replied' ? 'bg-white text-primary border-bottom border-3 border-primary shadow-sm' : 'bg-transparent text-muted'}`}
                             onClick={() => setFilter('replied')}
                         >
                             <Icon icon="solar:letter-opened-bold-duotone" className="me-2" />
                             Responded
                         </button>
                         <button
-                            className={`flex-grow-1 py-3 px-4 fw-bold border-0 transition-all ${filter === 'history' ? 'bg-white text-primary border-bottom border-3 border-primary shadow-sm' : 'bg-transparent text-muted'}`}
+                            className={`flex-grow-1 py-3 px-4 d-flex justify-content-center align-items-center fw-bold border-0 transition-all ${filter === 'history' ? 'bg-white text-primary border-bottom border-3 border-primary shadow-sm' : 'bg-transparent text-muted'}`}
                             onClick={() => setFilter('history')}
                         >
                             <Icon icon="solar:history-bold-duotone" className="me-2" />

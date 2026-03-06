@@ -1,26 +1,36 @@
 import axiosInstance from "./axiosInstance";
 
-export const submitProfile = async (form) => {
-    // Create FormData object
+const createProfileFormData = (form) => {
     const formData = new FormData();
 
     // Add file with correct field name 'profilePicture' (backend expects this)
-    if (form.profileImage) {
+    // Only append if it's an actual File object, not a string URL
+    if (form.profileImage && typeof form.profileImage !== 'string') {
         formData.append('profilePicture', form.profileImage);
     }
 
     // Add all other form fields
     Object.keys(form).forEach((key) => {
-        // Skip profileImage as we already added it as profilePicture
+        // Skip profileImage as we handle it above
         if (key !== 'profileImage' && form[key] !== null && form[key] !== undefined && form[key] !== '') {
             if (Array.isArray(form[key]) && (key === 'education' || key === 'employmentHistory')) {
                 formData.append(key, JSON.stringify(form[key]));
             } else {
-                formData.append(key, form[key]);
+                // If it's an array for relationships (like sons, daughters), stringify if needed, or handle comma strings
+                if (Array.isArray(form[key])) {
+                    formData.append(key, JSON.stringify(form[key]));
+                } else {
+                    formData.append(key, form[key]);
+                }
             }
         }
     });
 
+    return formData;
+};
+
+export const submitProfile = async (form) => {
+    const formData = createProfileFormData(form);
     console.log('Submitting profile with FormData');
 
     try {
@@ -32,11 +42,12 @@ export const submitProfile = async (form) => {
         return res.data;
     } catch (error) {
         console.error("Profile Submit Error:", error.response?.data || error.message);
-        throw new Error(error.response?.data?.message || "Failed to Submit profile data");
+        throw new Error(error.response?.data?.message || "Failed to submit profile data");
     }
 };
 
-export const updateProfile = async (formData) => {
+export const updateProfile = async (form) => {
+    const formData = createProfileFormData(form);
     console.log('Updating profile with FormData');
 
     try {
@@ -52,7 +63,8 @@ export const updateProfile = async (formData) => {
     }
 };
 
-export const updateUserProfileById = async (userId, formData) => {
+export const updateUserProfileById = async (userId, form) => {
+    const formData = createProfileFormData(form);
     console.log(`Updating profile for user ${userId} with FormData`);
 
     try {
