@@ -69,14 +69,25 @@ function RouteGuard({ children, requireProfile = false, redirectIfAuthenticated 
   }
 
   // Public route - redirect if authenticated
+  // if (redirectIfAuthenticated) {
+  //   // If authenticated, redirect based on profile status
+  //   if (isAuthenticated) {
+  //     const defaultPath = user?.isSuperAdmin ? "/admin/user-ips" : "/";
+  //     const targetPath = isProfileCompleted ? defaultPath : (hasProfile ? "" : "/complete-profile");
+  //     return <Navigate to={targetPath} replace />;
+  //   }
+  //   // If not authenticated, allow access (for sign-in/sign-up pages)
+  //   return children;
+  // }
+
   if (redirectIfAuthenticated) {
-    // If authenticated, redirect based on profile status
     if (isAuthenticated) {
       const defaultPath = user?.isSuperAdmin ? "/admin/user-ips" : "/";
-      const targetPath = isProfileCompleted ? defaultPath : (hasProfile ? "" : "/complete-profile");
+      const targetPath = isProfileCompleted ? defaultPath : "/complete-profile";
+
       return <Navigate to={targetPath} replace />;
     }
-    // If not authenticated, allow access (for sign-in/sign-up pages)
+
     return children;
   }
 
