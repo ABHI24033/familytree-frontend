@@ -50,7 +50,7 @@ const FriendsRelativesPage = () => {
                                         >
                                             <div className="d-flex align-items-center gap-2">
                                                 <Icon icon="mdi:account-details-outline" className="fs-5" />
-                                                All Contacts
+                                                Contacts
                                             </div>
                                             {activeTab === "contacts" && (
                                                 <div className="position-absolute bottom-0 start-0 w-100 bg-primary" style={{ height: "3px", borderRadius: "3px 3px 0 0" }} />

@@ -196,35 +196,32 @@ const EventRSVPForm = ({
         );
     }
 
-    // --- VIEW: FORM ---
     return (
-        <form onSubmit={handleSubmit} className="premium-card animate-fade-up border-0 shadow-lg p-4 p-md-5">
-            <h4 className="fw-bold mb-4 text-center">RSVP to the Event</h4>
-
+        <form onSubmit={handleSubmit} className="">
             {/* Public Guest Fields */}
             {isExternal && (
-                <div className="row g-3 mb-5 p-4 bg-light rounded-4 border">
-                    <div className="col-md-6 text-start">
-                        <label className="small fw-bold text-secondary mb-2">
+                <div className="row gap-4">
+                    <div className="col-md-12 text-start">
+                        <label className="small d-flex align-items-center fw-bold text-secondary mb-2">
                             <Icon icon="lucide:user" className="me-1" /> Full Name
                         </label>
                         <input
                             type="text"
-                            className="form-input-premium w-100"
-                            placeholder="How should we address you?"
+                            className="form-input-premium py-10 px-10 w-100"
+                            placeholder="Name"
                             required
                             value={name}
                             onChange={e => setName(e.target.value)}
                         />
                     </div>
-                    <div className="col-md-6 text-start">
-                        <label className="small fw-bold text-secondary mb-2">
+                    <div className="col-md-12 text-start">
+                        <label className="small d-flex align-items-center fw-bold text-secondary mb-2">
                             <Icon icon="lucide:phone" className="me-1" /> Mobile Number
                         </label>
                         <input
                             type="tel"
-                            className="form-input-premium w-100"
-                            placeholder="For event updates"
+                            className="form-input-premium py-10 px-10 w-100"
+                            placeholder="Mobile Number"
                             required
                             value={mobile}
                             onChange={e => setMobile(e.target.value)}
@@ -234,8 +231,8 @@ const EventRSVPForm = ({
             )}
 
             {/* Status Selection */}
-            <div className="mb-5 text-center">
-                <label className="text-uppercase tracking-wider small fw-bold text-muted mb-3 d-block">Will you join us?</label>
+            <div className="mt-10 text-center">
+                <label className="text-uppercase tracking-wider small fw-bold text-muted d-block">Will you join us?</label>
                 <div className="row g-2">
                     {[
                         { id: 'accepted', label: 'Attending', icon: 'mdi:check-circle', color: 'text-success', bg: 'bg-success-focus' },
@@ -339,7 +336,7 @@ const EventRSVPForm = ({
                 </div>
             )}
 
-            <div className="d-flex gap-3 mt-5">
+            <div className="d-flex mt-3">
                 {userStatus && userStatus !== 'pending' && (
                     <button
                         type="button"
@@ -352,7 +349,7 @@ const EventRSVPForm = ({
 
                 <button
                     type="submit"
-                    className="btn-premium flex-grow-1 py-3 shadow-md"
+                    className="btn btn-primary flex-grow-1 py-3 shadow-md"
                     disabled={isLoading}
                 >
                     {isLoading ? (

@@ -260,18 +260,34 @@ const EventDetailsPage = () => {
                                                     </div>
 
                                                 ) : (
-                                                    <EventRSVPForm
-                                                        isAuthenticated={isAuthenticated}
-                                                        userStatus={myGuestEntry?.status}
-                                                        userFoodPreference={myGuestEntry?.foodPreference}
-                                                        userTotalAttendees={myGuestEntry?.totalAttendees}
-                                                        userVegAttendees={myGuestEntry?.vegAttendees}
-                                                        userNonVegAttendees={myGuestEntry?.nonVegAttendees}
-                                                        userCity={myGuestEntry?.city}
-                                                        isExternal={!isAuthenticated}
-                                                        onSubmit={handleRSVPSubmit}
-                                                        isLoading={isRSVPLoading}
-                                                    />
+                                                    // <div className="d-flex align-items-center justify-content-center w-100 h-100 py-5" style={{ minHeight: "300px" }}>
+                                                    //     <EventRSVPForm
+                                                    //         isAuthenticated={isAuthenticated}
+                                                    //         userStatus={myGuestEntry?.status}
+                                                    //         userFoodPreference={myGuestEntry?.foodPreference}
+                                                    //         userTotalAttendees={myGuestEntry?.totalAttendees}
+                                                    //         userVegAttendees={myGuestEntry?.vegAttendees}
+                                                    //         userNonVegAttendees={myGuestEntry?.nonVegAttendees}
+                                                    //         userCity={myGuestEntry?.city}
+                                                    //         isExternal={!isAuthenticated}
+                                                    //         onSubmit={handleRSVPSubmit}
+                                                    //         isLoading={isRSVPLoading}
+                                                    //     />
+                                                    // </div>
+                                                    <div className="w-100 py-3">
+                                                        <EventRSVPForm
+                                                            isAuthenticated={isAuthenticated}
+                                                            userStatus={myGuestEntry?.status}
+                                                            userFoodPreference={myGuestEntry?.foodPreference}
+                                                            userTotalAttendees={myGuestEntry?.totalAttendees}
+                                                            userVegAttendees={myGuestEntry?.vegAttendees}
+                                                            userNonVegAttendees={myGuestEntry?.nonVegAttendees}
+                                                            userCity={myGuestEntry?.city}
+                                                            isExternal={!isAuthenticated}
+                                                            onSubmit={handleRSVPSubmit}
+                                                            isLoading={isRSVPLoading}
+                                                        />
+                                                    </div>
                                                 )}
                                         </div>
                                     )}

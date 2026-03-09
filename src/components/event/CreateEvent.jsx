@@ -473,7 +473,7 @@ export default function CreateEvent() {
 
                             {/* STEP 3: QR CODE */}
                             {currentStep === 3 && (
-                                <div className="p-4 p-md-5 animation-fade-in text-center">
+                                <div className="p-5 animation-fade-in text-center">
                                     <div className="mb-4">
                                         <div className="rounded-circle bg-success bg-opacity-10 d-inline-flex p-3 mb-3 text-success">
                                             <Icon icon="mdi:check-circle" width={48} />
@@ -482,10 +482,10 @@ export default function CreateEvent() {
                                         <p className="text-muted small">Your event is ready. Here are your QR codes.</p>
                                     </div>
 
-                                    <div className="row g-3 g-md-4 mb-5">
+                                    <div className="row py-5 g-3 g-md-4 mb-5">
                                         {/* RSVP QR */}
                                         <div className="col-12 col-md-6">
-                                            <div className="p-3 p-md-4 bg-white border border-light rounded-4 shadow-sm h-100">
+                                            <div className=" bg-white h-100">
                                                 <div id="rsvp-qr-container" className="mb-3 d-flex justify-content-center">
                                                     <QRCodeCanvas
                                                         id="rsvp-canvas"
@@ -498,13 +498,13 @@ export default function CreateEvent() {
                                                 <h6 className="fw-bold mb-1 small">Digital RSVP</h6>
                                                 <p className="smaller text-muted mb-3">For digital registration</p>
                                                 <div className="d-flex gap-2 justify-content-center">
-                                                    <button className="btn btn-sm btn-outline-primary px-2" onClick={() => {
+                                                    <button className="btn btn-sm btn-outline-primary" onClick={() => {
                                                         navigator.clipboard.writeText(rsvpLink);
                                                         setAlert({ type: "success", message: "RSVP Link copied!" });
                                                     }}>
                                                         <Icon icon="mdi:content-copy" className="me-1" /> Link
                                                     </button>
-                                                    <button className="btn btn-sm btn-success px-2" onClick={() => downloadQRCode("#rsvp-canvas", "rsvp-qr")}>
+                                                    <button className="btn btn-sm btn-success" onClick={() => downloadQRCode("#rsvp-canvas", "rsvp-qr")}>
                                                         <Icon icon="mdi:download" className="me-1" /> Save
                                                     </button>
                                                 </div>
@@ -513,7 +513,7 @@ export default function CreateEvent() {
 
                                         {/* Attendance QR */}
                                         <div className="col-12 col-md-6">
-                                            <div className="p-3 p-md-4 bg-white border border-light rounded-4 shadow-sm h-100">
+                                            <div className="bg-white h-100">
                                                 <div id="attendance-qr-container" className="mb-3 d-flex justify-content-center">
                                                     <QRCodeCanvas
                                                         id="attendance-canvas"
@@ -526,14 +526,14 @@ export default function CreateEvent() {
                                                 <h6 className="fw-bold mb-1 small">Venue Entry</h6>
                                                 <p className="smaller text-muted mb-3">For physical arrival</p>
                                                 <div className="d-flex gap-2 justify-content-center">
-                                                    <button className="btn btn-sm btn-outline-primary px-2" onClick={() => {
+                                                    <button className="btn btn-sm btn-outline-primary" onClick={() => {
                                                         const link = `${window.location.origin}/events/${createdEventId}/attendance`;
                                                         navigator.clipboard.writeText(link);
                                                         setAlert({ type: "success", message: "Attendance Link copied!" });
                                                     }}>
                                                         <Icon icon="mdi:content-copy" className="me-1" /> Link
                                                     </button>
-                                                    <button className="btn btn-sm btn-success px-2" onClick={() => downloadQRCode("#attendance-canvas", "venue-attendance-qr")}>
+                                                    <button className="btn btn-sm btn-success" onClick={() => downloadQRCode("#attendance-canvas", "venue-attendance-qr")}>
                                                         <Icon icon="mdi:download" className="me-1" /> Save
                                                     </button>
                                                 </div>

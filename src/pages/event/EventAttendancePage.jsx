@@ -93,85 +93,73 @@ const EventAttendancePage = () => {
     }
 
     return (
-        <div className="min-vh-100 d-flex flex-column align-items-center justify-content-center p-3"
-            style={{ background: 'linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%)' }}>
-
-            <div className="mb-5 animate-fade-up">
-                <Logo />
-            </div>
-
-            <div className="w-100" style={{ maxWidth: '480px' }}>
-                <div className="premium-card animate-fade-up overflow-hidden border-0 shadow-lg">
-                    {/* Event Header */}
-                    <div className="p-4 bg-primary text-white text-center shadow-sm">
-                        <p className="text-uppercase tracking-widest smaller fw-bold mb-1 opacity-75">Event Arrival</p>
-                        <h4 className="fw-bold mb-0">{event.eventName}</h4>
-                    </div>
-
-                    <div className="container-fluid min-vh-100 d-flex align-items-center justify-content-center p-2 p-md-4 py-3 bg-premium">
-                        <div className="card border-0 shadow-lg rounded-4 overflow-hidden animate-fade-up w-100" style={{ maxWidth: "540px" }}>
-                            <div className="card-body p-4 p-md-5">
-                                {/* Header */}
-                                <div className="text-center mb-4">
-                                    <div className="d-inline-flex p-3 rounded-circle bg-primary-focus text-primary-main shadow-sm mb-3">
-                                        <Icon icon="mdi:account-badge-horizontal-outline" width={40} />
-                                    </div>
-                                    <h2 className="fw-bold text-premium fs-4 fs-md-3">Event Check-in</h2>
-                                    <p className="text-muted small">Please provide your details to mark your attendance</p>
-                                </div>
-
-                                <form onSubmit={handleSubmit} className="row g-3">
-                                    <div className="col-12">
-                                        <label className="form-label small fw-bold text-muted">Full Name</label>
-                                        <div className="position-relative">
-                                            <Icon icon="mdi:account" className="position-absolute mt-3 ms-3 text-muted" width={20} />
-                                            <input
-                                                type="text"
-                                                className="form-control form-input-premium ps-5"
-                                                placeholder="Enter your name"
-                                                required
-                                                value={name}
-                                                onChange={(e) => setName(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-12">
-                                        <label className="form-label small fw-bold text-muted">Mobile Number</label>
-                                        <div className="position-relative">
-                                            <Icon icon="mdi:phone" className="position-absolute mt-3 ms-3 text-muted" width={20} />
-                                            <input
-                                                type="tel"
-                                                className="form-control form-input-premium ps-5"
-                                                placeholder="Enter mobile number"
-                                                required
-                                                value={mobile}
-                                                onChange={(e) => setMobile(e.target.value)}
-                                            />
-                                        </div>
-                                    </div>
-
-                                    <div className="col-12 pt-3">
-                                        <button
-                                            type="submit"
-                                            className="btn btn-premium w-100 py-3 shadow-sm d-flex align-items-center justify-content-center gap-2"
-                                            disabled={isPending}
-                                        >
-                                            {isPending ? (
-                                                <><span className="spinner-border spinner-border-sm"></span> Marking...</>
-                                            ) : (
-                                                <><Icon icon="mdi:check-circle" width={20} /> Mark Attendance</>
-                                            )}
-                                        </button>
-                                    </div>
-                                </form>
+        <div className="min-vh-100 d-flex align-items-center justify-content-center bg-premium p-3">
+            <div className="w-100" style={{ maxWidth: "480px" }}>
+                <div className="premium-card p-5 animate-fade-up overflow-hidden border-0 shadow-sm bg-white rounded-4">
+                    <div className="card-body p-4 p-md-5">
+                        {/* Logo and Header */}
+                        <div className="text-center mb-4">
+                            <div className="mb-4 d-flex justify-content-center">
+                                <Logo />
                             </div>
+                            <div className="d-inline-flex p-3 rounded-circle bg-primary-focus text-primary-main shadow-sm mb-3">
+                                <Icon icon="mdi:account-badge-horizontal-outline" width={40} />
+                            </div>
+                            <p className="text-uppercase tracking-widest smaller fw-bold mb-1 opacity-75">Event Arrival</p>
+                            <h2 className="fw-bold text-premium fs-4 fs-md-3 mb-1">{event.eventName}</h2>
+                            <p className="text-muted small">Please provide your details to mark your attendance</p>
                         </div>
+
+                        <form onSubmit={handleSubmit} className="row g-3">
+                            <div className="col-12">
+                                <label className="form-label small fw-bold text-muted">Full Name</label>
+                                <div className="position-relative">
+                                    <Icon icon="mdi:account" className="position-absolute mt-3 ms-3 text-muted" width={20} />
+                                    <input
+                                        type="text"
+                                        className="form-control form-input-premium ps-5"
+                                        placeholder="Enter your name"
+                                        required
+                                        value={name}
+                                        onChange={(e) => setName(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="col-12">
+                                <label className="form-label small fw-bold text-muted">Mobile Number</label>
+                                <div className="position-relative">
+                                    <Icon icon="mdi:phone" className="position-absolute mt-3 ms-3 text-muted" width={20} />
+                                    <input
+                                        type="tel"
+                                        className="form-control form-input-premium ps-5"
+                                        placeholder="Enter mobile number"
+                                        required
+                                        value={mobile}
+                                        onChange={(e) => setMobile(e.target.value)}
+                                    />
+                                </div>
+                            </div>
+
+                            <div className="col-12 pt-3">
+                                <button
+                                    type="submit"
+                                    className="btn btn-primary w-100 py-3 shadow-sm d-flex align-items-center justify-content-center gap-2 rounded-3"
+                                    disabled={isPending}
+                                >
+                                    {isPending ? (
+                                        <><span className="spinner-border spinner-border-sm"></span> Marking...</>
+                                    ) : (
+                                        <><Icon icon="mdi:check-circle" width={20} /> Mark Attendance</>
+                                    )}
+                                </button>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
-                <p className="text-center text-muted smaller mt-5 animate-fade-up opacity-50">
-                    &copy; {new Date().getFullYear()} Family Tree. Professional Event Hosting.
+                <p className="text-center text-muted smaller mt-4 animate-fade-up opacity-50">
+                    &copy; {new Date().getFullYear()} Sanyojan.
                 </p>
             </div>
 
@@ -179,10 +167,21 @@ const EventAttendancePage = () => {
             <style dangerouslySetInnerHTML={{
                 __html: `
                 .tracking-widest { letter-spacing: 0.2em; }
-                .shadow-md { box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); }
+                .bg-primary-focus { background-color: rgba(13, 110, 253, 0.1); }
+                .text-primary-main { color: #0d6efd; }
+                .form-input-premium {
+                    border-radius: 10px;
+                    padding: 0.75rem 1rem;
+                    border: 1px solid #e2e8f0;
+                }
+                .form-input-premium:focus {
+                    box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.15);
+                    border-color: #0d6efd;
+                }
             ` }} />
         </div>
     );
+
 };
 
 export default EventAttendancePage;
